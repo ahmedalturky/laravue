@@ -14,7 +14,9 @@
 
 Route::group(['prefix'=>'vue'], function(){
     Route::get('profile' , 'API\UserController@profile');
+
 });
+
 
 
 

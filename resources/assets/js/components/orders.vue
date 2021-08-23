@@ -25,7 +25,8 @@
                      <th>الهاتف</th>
                       <th>التاريخ</th>
                     <th>الفريم</th>
-                      <th>المبلغ</th>
+                      <th> المبلغ المدفوع</th>
+                      <th>المبلغ المتبقي</th>
                       <th>modify</th>
                     </tr>
                   </thead>
@@ -37,7 +38,8 @@
                        <td>{{order.clint_phone}}</td>
                       <td>{{order.date }}</td>
                         <td>{{order.prodect.name }}</td>
-                      <td>{{order.amount_left }} ج.س</td>
+                      <td>{{formatPrice(order.payed )}} SDG</td>
+                      <td>{{formatPrice(order.amount_left )}} SDG</td>
 
                       <!-- <td><span class="tag tag-success">Approved</span></td> -->
                       <td> 
@@ -74,7 +76,7 @@
                         <!-- <h4 class="pt-1 m-0 text-white">10% <i class="la la-arrow-down"></i></h4> -->
                       </div>
                       <div class="col-6 text-right"><center>
-                        <h3 class="text-white mb-2"><i class="la la-arrow-up"></i>{{orders_amount}} &nbsp;&nbsp;ج.س </h3></center>
+                        <h3 class="text-white mb-2"><i class="la la-arrow-up"></i>{{formatPrice(orders_amount)}} &nbsp;&nbsp;SDG </h3></center>
                         <span> مجموع مبلغ المبيعات</span>
                         <br>
                       </div>
@@ -103,7 +105,7 @@
           <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" width="100%">
               <div class="modal-header">
-                <h5 class="modal-title" v-show="!editmode" id="addnewLabel"> اضافة منصرف</h5>
+                <h5 class="modal-title" v-show="!editmode" id="addnewLabel">طباعة ايصال </h5>
                 <h5 class="modal-title" v-show="editmode" id="addnewLabel"> تعديل بيانات الطلب</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -133,15 +135,15 @@
                             <td style="text-align:right; border: 1px groove black;"><b>نوع الفريم   <b> :</b>  {{  this.form.prodect.name  }} </b> </td>
                           </tr>
                            <tr class="text-center" >
-                            <td style="text-align:right; border: 1px groove black;"><b> المبلغ الكلي  <b> :</b>  {{  this.form.prise  }} </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> المبلغ الكلي  <b> :</b>  {{  formatPrice(this.form.prise)  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b>التخفيض (%)   <b> :</b>  {{  this.form.discount  }} </b> </td>
                           </tr>
                            <tr class="text-center" >
-                            <td style="text-align:right; border: 1px groove black;"><b>المبلغ بعد التخفيض   <b> :</b>  {{  this.form.amount_after  }} </b> </td>
-                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  this.form.payed  }} </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b>المبلغ بعد التخفيض   <b> :</b>  {{  formatPrice(this.form.amount_after)  }} </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  formatPrice(this.form.payed)  }} </b> </td>
                           </tr>
                           <tr class="text-center" >
-                            <td style="text-align:right; border: 1px groove black;"><b> المتبقي    <b> :</b>  {{  this.form.amount_left  }} </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> المتبقي    <b> :</b>  {{  formatPrice(this.form.amount_left)  }} </b> </td>
                           </tr>
                             <tr class="text-center" >
                             <td style="text-align:right; border: 1px groove black;"><b> ملاحظة    <b> :</b>  {{  this.form.note  }} </b> </td>
@@ -180,7 +182,8 @@
                           </tr>
                            </tbody>
                         </table><br>
-                                <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;" dir="ltr">
+
+                                <table v-show="!butifele" style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;" dir="ltr">
                                     <thead>
                                <tr>
                                       <th style="text-align:center; border: 1px solid black;" colspan="4">Right</th>
@@ -200,7 +203,7 @@
                   <tbody> 
                     <tr >
                       <td> Dist</td>
-                      <td style="text-align:right; border: 1px groove black;">{{  this.form.D_R_SPH  }} </td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SPH  }} </center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_AXIS  }}</center></td>
                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_SPH  }} </center></td>
@@ -432,12 +435,15 @@
 </template>
 
 <script>
+    import DatatableFactory from 'vuejs-datatable';
 
   export default {
       data(){
             return{
+            
               editmode: false,
               reportdata: false,
+              butifele: false,
              products :[],
               orders :{},
               orders_amount:'',
@@ -503,6 +509,10 @@
             
             // console.log(val)
           },
+            formatPrice(value) {
+        let val = (value/1).toFixed(2).replace(',', '.')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
           total(){
             //  var amount_after=5;
             // var payed=document.getElementById("payed").value;
@@ -554,6 +564,11 @@
        this.plase_form=" خارجي";
          }else{
        this.plase_form=" بدون كشف";
+         }
+         if(order.order_type==2){
+           this.butifele=true;
+         }else{
+ this.butifele=false;
          }
           this.form.fill(order);
           

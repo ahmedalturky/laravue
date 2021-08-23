@@ -13,6 +13,7 @@ import Form from 'vform'
 import swal from 'sweetalert2'
 window.swal = swal;
 
+
 const toast = swal.mixin({
     toast: true,
     position: 'top-end',
@@ -32,6 +33,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+
 import VueProgressBar from 'vue-progressbar'
 Vue.use(VueProgressBar, {
     color: 'rgb(143, 255, 199)',
@@ -42,18 +44,20 @@ import DataTable from 'laravel-vue-datatable';
 Vue.use(DataTable);
 
 
+
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue') },
     { path: '/developer', component: require('./components/Developer.vue') },
     { path: '/users', component: require('./components/users.vue') },
     { path: '/expenses', component: require('./components/expenses.vue') },
     { path: '/order', component: require('./components/form_order.vue') },
+    { path: '/report_expensess', component: require('./components/reports.vue') },
+    { path: '/reports_orders', component: require('./components/reports_orders.vue') },
+    { path: '/reports_prodects', component: require('./components/reports_prodects.vue') },
     { path: '/orders', component: require('./components/orders.vue') },
     { path: '/beautifying', component: require('./components/form_beautifying_order.vue') },
     { path: '/treasury', component: require('./components/treasury.vue') },
-    { path: '/prodects', component: require('./components/prodects.vue') },
-    { path: '/useres', component: require('./components/users_b.vue') }
-
+    { path: '/prodects', component: require('./components/prodects.vue') }
 
 
 

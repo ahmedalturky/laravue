@@ -75,4 +75,12 @@ class ProdectController extends Controller
         $prodect->delete();
    
         return ['message' => 'prodect Deletet'];    }
+        public function report_date($dateone,$datetwo)
+        {
+            $d=date($dateone);
+            $d2=date($datetwo);
+       
+             $users=Prodect::whereBetween('date',[$d.' 00:00:00',$d2.' 23:59:59'])->get();
+             return response()->json(['databack'=>$users]);
+        }
 }

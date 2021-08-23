@@ -1802,6 +1802,7 @@ select.form-control {
 .card .card {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
+    max-height: 350px;
 }
 
 .card .card-title {

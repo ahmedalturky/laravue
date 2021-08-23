@@ -17,6 +17,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::apiResources(['user' => 'API\UserController']);
+Route::get('report_expense/{dateone}/{datetwo}', 'API\ExpensesController@report_date');
+Route::get('report_expensed/{amountone}/{amountwo}', 'API\ExpensesController@report_money');
+
+Route::get('report_orders/{dateone}/{datetwo}', 'API\OrdesController@report_date');
+Route::get('report_orderes/{amountone}/{amountwo}', 'API\OrdesController@report_money');
+Route::get('report_orders/{prodect_id}', 'API\OrdesController@report_prodect');
+
+Route::get('prodects/{dateone}/{datetwo}', 'API\ProdectController@report_date');
+
+
+
 Route::apiResources(['expenses' => 'API\ExpensesController']);
 Route::apiResources(['orders' => 'API\OrdesController']);
 Route::apiResources(['prodects' => 'API\ProdectController']);

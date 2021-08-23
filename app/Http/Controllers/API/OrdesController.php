@@ -7,6 +7,7 @@ use App\Orders;
 use App\Prodect;
 use App\Http\Controllers\Controller;
 
+
 class OrdesController extends Controller
 {
     /**
@@ -19,7 +20,9 @@ class OrdesController extends Controller
         // return Orders::latest()->paginate(10);
         $orders= Orders::with('prodect')->latest()->paginate(10);
         $prodect= Prodect::latest()->paginate(10);
-        $orders_amount= Orders::latest()->sum('amount_left');
+        $orders_amount= Orders::latest()->sum('payed');
+
+
         return response()->json(['orders'=>$orders,'orders_amount'=>$orders_amount,'prodects'=>$prodect]);
     }
 
@@ -109,4 +112,23 @@ class OrdesController extends Controller
         $orders->delete();
    
         return ['message' => 'expense Deletet'];    }
+
+        public function report_date($dateone,$datetwo)
+    {
+        $d=date($dateone);
+        $d2=date($datetwo);
+   
+         $users=Orders::with('prodect')->whereBetween('date',[$d.' 00:00:00',$d2.' 23:59:59'])->get();
+         return response()->json(['databack'=>$users]);
+    }
+    public function report_money($amountone,$amountwo)
+    {
+         $users=Orders::with('prodect')->whereBetween('amount_left',[$amountone,$amountwo])->get();
+         return response()->json(['databack'=>$users]);
+    }
+    public function report_prodect($prodect)
+    {
+         $users=Orders::with('prodect')->where('prodect_id',[$prodect])->get();
+         return response()->json(['databack'=>$users]);
+    }
 }

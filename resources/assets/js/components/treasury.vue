@@ -26,10 +26,10 @@
                 <div class="card-content">
                   <div class="media align-items-stretch bg-gradient-x-warning text-white rounded">
                     <div class="p-2 media-middle">
-                      <h1 class="text-white">{{expenses_total}} ج.س</h1>
-                      <h1 class="text-white">{{orders_amount}} ج.س </h1>
+                      <h1 class="text-white">{{formatPrice(orders_amount)}} SDG </h1>
+                      <h1 class="text-white">{{formatPrice(expenses_total)}} SDG</h1>
                       <h1 class="text-white">-------------</h1>
-                      <h1 class="text-white">{{orders_amount-expenses_total}}</h1>
+                      <h1 class="text-white">{{formatPrice(orders_amount-expenses_total)}} SDG</h1>
                     </div>
                     <div class="media-body p-2">
                       <h4 class="text-white">مجموع الخزن</h4>
@@ -76,7 +76,7 @@
                        <td>{{order.clint_phone}}</td>
                       <td>{{order.date }}</td>
                       <td>{{order.prodect.name }}</td>
-                      <td>{{order.amount_left }} ج.س</td>
+                      <td>{{formatPrice(order.amount_left) }} SDG</td>
 
                       <!-- <td><span class="tag tag-success">Approved</span></td> -->
                       <!-- <td> 
@@ -126,7 +126,7 @@
                     <tr v-for="expense in expenses" :key="expense.id">
                       <td>{{expense.id}}</td>
                       <td>{{expense.name}}</td>
-                      <td>{{expense.amount}}</td>
+                      <td>{{formatPrice(expense.amount)}} SDG</td>
                       <td>{{expense.date }}</td>
                       <td>{{expense.details }}</td>
 
@@ -230,6 +230,10 @@
 
 
         },
+         formatPrice(value) {
+        let val = (value/1).toFixed(2).replace(',', '.')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
          suma(epx_amount,ord_amount){
 this.total=ord_amount-epx_amount;
         },

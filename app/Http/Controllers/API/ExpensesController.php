@@ -77,4 +77,17 @@ class ExpensesController extends Controller
    
         return ['message' => 'expense Deletet'];
     }
+    public function report_date($dateone,$datetwo)
+    {
+        $d=date($dateone);
+        $d2=date($datetwo);
+   
+         $users=Expenses::whereBetween('date',[$d.' 00:00:00',$d2.' 23:59:59'])->get();
+         return response()->json(['databack'=>$users]);
+    }
+    public function report_money($amountone,$amountwo)
+    {
+         $users=Expenses::whereBetween('amount',[$amountone,$amountwo])->get();
+         return response()->json(['databack'=>$users]);
+    }
 }

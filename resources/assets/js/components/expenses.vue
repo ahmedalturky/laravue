@@ -31,7 +31,7 @@
                     <tr v-for="expense in expenses" :key="expense.id">
                       <td>{{expense.id}}</td>
                       <td>{{expense.name}}</td>
-                      <td>{{expense.amount}}</td>
+                      <td>{{formatPrice(expense.amount)}}</td>
                       <td>{{expense.date }}</td>
                       <td>{{expense.details }}</td>
 
@@ -65,7 +65,7 @@
                         <!-- <h4 class="pt-1 m-0 text-white">10% <i class="la la-arrow-down"></i></h4> -->
                       </div>
                       <div class="col-6 text-right">
-                        <h3 class="text-white mb-2"><i class="la la-arrow-down"></i>{{expenses_total}} ج.س </h3>
+                        <h3 class="text-white mb-2"><i class="la la-arrow-down"></i>{{formatPrice(expenses_total)}} SDG </h3>
                         <span> مجموع مبلغ المنصرفات</span>
                         <br>
                       </div>
@@ -140,6 +140,7 @@
   export default {
       data(){
             return{
+              
               editmode: false,
               expenses :{},
               expenses_total:'',
@@ -193,6 +194,10 @@
 
 
         },
+            formatPrice(value) {
+        let val = (value/1).toFixed(2).replace(',', '.')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
         deleteuser(id){
 
           // sweet alert 

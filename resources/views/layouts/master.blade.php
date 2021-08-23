@@ -30,7 +30,7 @@
   <link rel="stylesheet" type="text/css" href="app-assets/fonts/simple-line-icons/style.css">
   <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/colors/palette-gradient.css">
   <!-- END Page Level CSS-->
-    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/datatables.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/datatables.min.css"> -->
   <!-- BEGIN Custom CSS-->
   <link rel="stylesheet" type="text/css" href="/assets/css/style-rtl.css">
   <!-- END Custom CSS-->
@@ -408,28 +408,37 @@ data-open="click" data-menu="vertical-compact-menu" data-col="2-columns">
   <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="main-menu-content">
       <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-        <li class=" nav-item"><router-link to="/dashboard"><i class="la la-home"></i><span class="menu-title" data-i18n="nav.dash.main">Dashboard</span></a>
+        <li class=" nav-item"><router-link to="/dashboard"><i class="la la-home"></i><span class="menu-title" data-i18n="nav.dash.main">الطلب</span></a>
    
         </li>
-        <li class=" nav-item"><router-link to="/orders" class="nav-link"><i class="la la-shopping-cart"></i><span class="menu-title" data-i18n="nav.dash.main"> Templates </span></a>
+        <li class=" nav-item"><router-link to="/orders" class="nav-link"><i class="la la-shopping-cart"></i><span class="menu-title" data-i18n="nav.dash.main"> المبيعات </span></a>
        
   
         </li>
-        <li class=" nav-item"><a href="/expenses"><i class="la la-money"></i><span class="menu-title" data-i18n="nav.page_layouts.main">Page layouts</span></a>
+        <li class=" nav-item"><a href="/expenses"><i class="la la-money"></i><span class="menu-title" data-i18n="nav.page_layouts.main">المنصرفات</span></a>
         </a>
            
         </li>
-        <li class=" nav-item"><a href="/treasury"><i class="la la-bank"></i><span class="menu-title" data-i18n="nav.navbars.main">Navbars</span></a>
+        <li class=" nav-item"><a href="/treasury"><i class="la la-bank"></i><span class="menu-title" data-i18n="nav.navbars.main">الخزنه</span></a>
         
         </li>
-        <li class=" nav-item"><a href="/prodects"><i class="icon-eyeglasses"></i><span class="menu-title" data-i18n="nav.vertical_nav.main">Vertical Nav</span></a>
+        <li class=" nav-item"><a href="/prodects"><i class="icon-eyeglasses"></i><span class="menu-title" data-i18n="nav.vertical_nav.main"> الفريمات</span></a>
          
         </li>
         <li class=" nav-item"><a href="#"><i class="la la-bar-chart"></i><span class="menu-title" data-i18n="nav.horz_nav.main">Horizontal Nav</span></a>
-          
+        <ul class="menu-content" style="">
+            <li><a class="menu-item" href="/report_expensess" data-i18n="nav.google_charts.google_bar_charts">تقارير المنصرفات </a>
+            </li>
+            <li><a class="menu-item" href="/reports_orders" data-i18n="nav.google_charts.google_line_charts">تقارير المبيعات </a>
+            </li>
+            <li><a class="menu-item" href="/reports_prodects" data-i18n="nav.google_charts.google_pie_charts">تقارير الفريمات</a>
+            </li>
+     
+            </li>
+          </ul>
         </li>
         <li class=" nav-item"><router-link to="/users"><i class="la la-users"></i><span class="menu-title" data-i18n="nav.page_headers.main">Page Headers</span></a>
-         
+        
         </li>
 
       </ul>
@@ -482,10 +491,10 @@ data-open="click" data-menu="vertical-compact-menu" data-col="2-columns">
   <script src="app-assets/js/core/app.js" type="text/javascript"></script>
   <script src="app-assets/js/scripts/customizer.js" type="text/javascript"></script>
   <!-- END MODERN JS-->
-  <script src="app-assets/vendors/js/tables/datatable/datatables.min.js" type="text/javascript"></script>
+  <!-- <script src="app-assets/vendors/js/tables/datatable/datatables.min.js" type="text/javascript"></script> -->
   <!-- BEGIN PAGE LEVEL JS-->
-  <script src="app-assets/js/scripts/tables/datatables/datatable-basic.js"
-  type="text/javascript"></script>
+  <!-- <script src="app-assets/js/scripts/tables/datatables/datatable-basic.js"
+  type="text/javascript"></script> -->
   <!-- <script src="/app-assets/js/scripts/pages/dashboard-sales.js" type="text/javascript"></script> -->
   <!-- END PAGE LEVEL JS-->
   <script src="/js/app.js"></script>
