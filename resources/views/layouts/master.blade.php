@@ -11,31 +11,43 @@
   </title>
   <link rel="apple-touch-icon" href="img/logo-o.jpeg">
   <link rel="shortcut icon" type="image/x-icon" href="img/logo-o.jpeg">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Quicksand:300,400,500,700"
-  rel="stylesheet">
-  <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css"
-  rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Quicksand:300,400,500,700"
+  rel="stylesheet"> -->
+  <!-- <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css"
+  rel="stylesheet"> -->
   <!-- BEGIN VENDOR CSS-->
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/vendors.css">
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/vendors.css"> -->
   <!-- END VENDOR CSS-->
   <!-- BEGIN MODERN CSS-->
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/app.css">
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/custom-rtl.css">
+  <link  href="{{ asset('app-assets/css-rtl/app.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/line-awesome.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/line-awesome.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/vendors.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/custom-rtl.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/core/menu/menu-types/vertical-compact-menu.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/core/colors/palette-gradient.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/vendors/css/charts/morris.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/fonts/simple-line-icons/style.css') }}" rel="stylesheet">
+  <link href="{{ asset('app-assets/css-rtl/cairo/cairo.css') }}" rel="stylesheet">
+  <link href="{{ asset('/assets/css/style-rtl.css') }}" rel="stylesheet">
+
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/app.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/custom-rtl.css"> -->
   <!-- END MODERN CSS-->
   <!-- BEGIN Page Level CSS-->
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/menu/menu-types/vertical-compact-menu.css">
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/colors/palette-gradient.css">
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/menu/menu-types/vertical-compact-menu.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/colors/palette-gradient.css"> -->
   <!-- <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/charts/jquery-jvectormap-2.0.3.css"> -->
-  <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/charts/morris.css">
-  <link rel="stylesheet" type="text/css" href="app-assets/fonts/simple-line-icons/style.css">
-  <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/colors/palette-gradient.css">
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/charts/morris.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/fonts/simple-line-icons/style.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="app-assets/css-rtl/core/colors/palette-gradient.css"> -->
   <!-- END Page Level CSS-->
     <!-- <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/datatables.min.css"> -->
   <!-- BEGIN Custom CSS-->
-  <link rel="stylesheet" type="text/css" href="/assets/css/style-rtl.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/assets/css/style-rtl.css"> -->
   <!-- END Custom CSS-->
   <!-- <link rel="stylesheet" href="/css/app.css"> -->
-  <link href='https://fonts.googleapis.com/css?family=Cairo' rel='stylesheet'>
+  <!-- <link href='https://fonts.googleapis.com/css?family=Cairo' rel='stylesheet'> -->
 <style>
 body,h1,h2,h3,h4,p,input,a {
     font-family: 'Cairo';
@@ -473,23 +485,33 @@ data-open="click" data-menu="vertical-compact-menu" data-col="2-columns">
       <span class="float-md-right d-block d-md-inline-blockd-none d-lg-block">Hand-crafted & Made with <i class="ft-heart pink"></i></span>
     </p>
   </footer>
+  <script src="{{ asset('app-assets/vendors/js/vendors.min.js') }}"></script>
+  <script src="{{ asset('app-assets/vendors/js/charts/chart.min.js') }}"></script>
+  <script src="{{ asset('app-assets/vendors/js/charts/raphael-min.js') }}"></script>
+  <script src="{{ asset('app-assets/vendors/js/charts/morris.min.js') }}"></script>
+  <script src="{{ asset('app-assets/data/jvector/visitor-data.js') }}"></script>
+  <script src="{{ asset('app-assets/js/core/app-menu.js') }}"></script>
+  <script src="{{ asset('app-assets/js/core/app.js') }}"></script>
+  <script src="{{ asset('app-assets/js/scripts/customizer.js') }}"></script>
+  <script src="{{ asset('/js/app.js') }}"></script>
+
   <!-- BEGIN VENDOR JS-->
-  <script src="app-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
+  <!-- <script src="app-assets/vendors/js/vendors.min.js" type="text/javascript"></script> -->
   <!-- BEGIN VENDOR JS-->
   <!-- BEGIN PAGE VENDOR JS-->
-  <script src="app-assets/vendors/js/charts/chart.min.js" type="text/javascript"></script>
+  <!-- <script src="app-assets/vendors/js/charts/chart.min.js" type="text/javascript"></script>
   <script src="app-assets/vendors/js/charts/raphael-min.js" type="text/javascript"></script>
-  <script src="app-assets/vendors/js/charts/morris.min.js" type="text/javascript"></script>
+  <script src="app-assets/vendors/js/charts/morris.min.js" type="text/javascript"></script> -->
   <!-- <script src="app-assets/vendors/js/charts/jvector/jquery-jvectormap-2.0.3.min.js"
   type="text/javascript"></script> -->
   <!-- <script src="app-assets/vendors/js/charts/jvector/jquery-jvectormap-world-mill.js"
   type="text/javascript"></script> -->
-  <script src="app-assets/data/jvector/visitor-data.js" type="text/javascript"></script>
+  <!-- <script src="app-assets/data/jvector/visitor-data.js" type="text/javascript"></script> -->
   <!-- END PAGE VENDOR JS-->
   <!-- BEGIN MODERN JS-->
-  <script src="app-assets/js/core/app-menu.js" type="text/javascript"></script>
+  <!-- <script src="app-assets/js/core/app-menu.js" type="text/javascript"></script>
   <script src="app-assets/js/core/app.js" type="text/javascript"></script>
-  <script src="app-assets/js/scripts/customizer.js" type="text/javascript"></script>
+  <script src="app-assets/js/scripts/customizer.js" type="text/javascript"></script> -->
   <!-- END MODERN JS-->
   <!-- <script src="app-assets/vendors/js/tables/datatable/datatables.min.js" type="text/javascript"></script> -->
   <!-- BEGIN PAGE LEVEL JS-->
@@ -497,7 +519,7 @@ data-open="click" data-menu="vertical-compact-menu" data-col="2-columns">
   type="text/javascript"></script> -->
   <!-- <script src="/app-assets/js/scripts/pages/dashboard-sales.js" type="text/javascript"></script> -->
   <!-- END PAGE LEVEL JS-->
-  <script src="/js/app.js"></script>
+  <!-- <script src="/js/app.js"></script> -->
 
 </body>
 </html>

@@ -65,28 +65,28 @@
                         </div>
                         <h4 class="form-section"><i class="la la-eye"></i> مقياس العدسات</h4>
                         <div class="row">
+                        
+                        
                           <div class="col-md-12">
                               <div class="card-body table-responsive p-0">
                                 <table class="table table-hover" dir="ltr">
                                     <thead>
-                               <tr>
-                                      <th colspan="4">Right</th>
-                                      <th colspan="4">Left</th>
-                    </tr>
+          
                     
                                          <tr>
                                      <th>#</th>
                                       <th ><center>SPH</center></th>
                                      <th> <center>SYL</center></th>
                                      <th><center>AXIS</center></th>
-                                     <th><center>SPH</center></th>
-                                     <th><center>SYL</center></th>
-                                    <th><center>AXIS</center></th>
+                                     <th><center>ADD1</center></th>
+                                     <th><center>ADD2</center></th>
+                                    <th><center>VA</center></th>
+                                    <th><center>C.lenses</center></th>
                     </tr>
                   </thead>
                   <tbody> 
                     <tr >
-                      <td> Dist</td>
+                      <td> Right</td>
                       <td><center><input v-model="form.D_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
                          name="D_R_SPH" > </center></td>
                       <td ><center><input v-model="form.D_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
@@ -99,9 +99,11 @@
                          name="D_L_SYL"></center> </td>
                       <td><center><input v-model="form.D_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
                          name="D_L_AXIS"> </center></td>
+                          <td><center><input v-model="form.D_L_ah1" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
+                         name="D_L_ah1"> </center></td>
                     </tr>
                       <tr>
-                      <td> Near</td>
+                      <td> Left</td>
                       <td><center><input v-model="form.N_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
                          name="N_R_SPH"></center></td>
                       <td><center><input v-model="form.N_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
@@ -114,13 +116,45 @@
                          name="N_L_SYL"> </center></td>
                       <td><center><input v-model="form.N_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
                          name="N_L_AXIS"> </center></td>
+                         <td><center><input v-model="form.N_L_ah2" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
+                         name="N_L_ah2"> </center></td>
                     </tr>
                 
                   </tbody>
                 </table>
-                      
+               
               </div>
+
               <div class="row">
+                         <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">Progressive</label>
+                              <div class="col-md-5">
+                                <input v-model="form.progressive" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" placeholder=""
+                                name="progressive" >
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">Bifocal</label>
+                              <div class="col-md-5">
+                                <input v-model="form.bifocal" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" placeholder=""
+                                name="bifocal" >
+                              </div>
+                            </div>
+                          </div>
+                            <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">S.V</label>
+                              <div class="col-md-5">
+                                <input v-model="form.sv" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" placeholder=""
+                                name="sv" >
+                              </div>
+                            </div>
+                          </div>
+
+
                          <div class="col-md-4">
                             <div class="form-group row">
                               <label class="col-md-3 label-control" for="userinput5"> IPD</label>
@@ -128,11 +162,18 @@
                                 <input v-model="form.IPD" class="form-control border-primary" type="number" placeholder="  " id="userinput5" name="IPD" step="0.01" >
                               </div>
                             </div></div>
+                              <div class="col-md-5">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput5"> نوع العدسات</label>
+                              <div class="col-md-5">
+                                <input v-model="form.type" class="form-control border-primary" type="text" placeholder="  " id="userinput5" name="type" step="0.01" >
+                              </div>
+                            </div></div>
                            <div class="col-md-4">
                             <div class="form-group row">
                               <label class="col-md-3 label-control" for="projectinput6">مكان الكشف</label>
                               <div class="col-md-9">
-                              <select v-model="form.plase" id="plase" name="plase" class="form-control">
+                              <select v-model="form.plase" id="plase" name="plase" class="form-control" required>
                                 <option value="1">في المركز</option>
                                 <option value="2">خارجي</option>
                                 <option value="3">بدون كشف</option>
@@ -144,7 +185,7 @@
                             <div class="form-group row">
                               <label class="col-md-3 label-control" for="projectinput6"> الفريم </label>
                               <div class="col-md-9">
-                              <select v-model="form.prodect_id" id="prodect_id" name="prodect_id" class="form-control">
+                              <select v-model="form.prodect_id" id="prodect_id" name="prodect_id" class="form-control" required>
                                 <option v-for="prodect  in products" :key="prodect.id" :value="prodect.id" >{{prodect.name}}</option>
                               </select>
                             </div></div>
@@ -197,7 +238,7 @@
                             <div class="form-group row">
                               <label class="col-md-3 label-control" for="userinput6">التخفيض (%)</label>
                               <div class="col-md-9">
-                                <input v-model="form.discount" class="form-control border-primary" type="number" placeholder="التخفيض" id="discount" name="discount" @change="discount">
+                                <input v-model="form.discount" class="form-control border-primary" type="number" placeholder="التخفيض" id="discount" name="discount" @change="discount" required>
                               </div>
                             </div>
                             <div class="form-group row">
@@ -212,7 +253,7 @@
                               <label class="col-md-3 label-control">  المدفوع </label>
                               <div class="col-md-9">
                                 <input v-model="form.payed" class="form-control border-primary" type="number" placeholder="المدفوع"
-                                id="payed" name="payed" @change="total" >
+                                id="payed" name="payed" @change="total" required >
                               </div>
                             </div>
                               <div class="form-group row">
@@ -265,9 +306,12 @@
               <div class="form-body"><div id="Report" class="paper" dir="rtl" >
                 <img  style="border-radius: 50%;width:90px;height: 90px;float:right;" alt="modern admin logo" src="img/logo-o.jpeg" >
                                <img  style="border-radius: 50%;width:90px;height: 90px;float:left;" alt="modern admin logo" src="img/logo-o.jpeg" >
-                 <center><h3 class="brand-text">أوبتيزون للبصريات</h3> <br>
+                 <center><h3 class="brand-text">مركز أوبتيزون للبصريات</h3> 
                  <h3 class="brand-text">Optizone Optics</h3>
-                 </center><br>                        <h4 class="form-section"><i class="la la-user"></i>  استلام الزبون</h4>
+                                       
+                      <h4 class="form-section"><i class="la la-home"></i>  الخرطوم-الطائف-شارع الستين-جوار كليةالرياض العالمية</h4>
+                      <h4 >0992989975-0121258927 :Tel<i class="la la-phone"></i>  </h4></center> 
+                      <!-- <h4 class="form-section"><i class="la la-user"></i>  استلام الزبون</h4> -->
 
                         <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;">
                            <tbody> <tr class="text-center" >
@@ -284,14 +328,16 @@
                             <td style="text-align:right; border: 1px groove black;"><b>نوع الفريم   <b> :</b>  {{  this.frame  }} </b> </td>
                           </tr>
                            <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>نوع العدسات   <b> :</b>  {{  this.form.type  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b> المبلغ الكلي  <b> :</b>  {{  this.form.price  }} </b> </td>
-                            <td style="text-align:right; border: 1px groove black;"><b>التخفيض (%)   <b> :</b>  {{  this.form.discount  }} </b> </td>
+                          
                           </tr>
                            <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>التخفيض (%)   <b> :</b>  {{  this.form.discount  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b>المبلغ بعد التخفيض   <b> :</b>  {{  this.form.amount_after  }} </b> </td>
-                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  this.form.payed  }} </b> </td>
                           </tr>
                           <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  this.form.payed  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b> المتبقي    <b> :</b>  {{  this.form.amount_left  }} </b> </td>
                           </tr>
                             <tr class="text-center" >
@@ -299,21 +345,24 @@
                           </tr>
                    
                             </tbody>
-                        </table><br>
-                       <div style="text-align: right;">
+                        </table>
+                       <div style="text-align: right;"><br>
                             <b>-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .
--المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .
--لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .<br>
--يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال .<br>
--العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.<br>
--عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .</b> 
-                       </div><br>
+<br>-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .
+<br>-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .
+<br>-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال .<br>
+<br>-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.
+<br>-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .
+                            </b>   </div>
                        <h3>_______________________________________________________________________________</h3>
          <img  style="border-radius: 50%;width:90px;height: 90px;float:right;" alt="modern admin logo" src="img/logo-o.jpeg" >
                                <img  style="border-radius: 50%;width:90px;height: 90px;float:left;" alt="modern admin logo" src="img/logo-o.jpeg" >
-                 <center><h3 class="brand-text">أوبتيزون للبصريات</h3> <br>
+                 <center><h3 class="brand-text">مركز أوبتيزون للبصريات</h3> 
                  <h3 class="brand-text">Optizone Optics</h3>
-                 </center><br>                        <h4 class="form-section"><i class="la la-user"></i>  تسليم المركز</h4>
+                 </center>              
+                  <!-- <h4 class="form-section"><i class="la la-home"></i>  الخرطوم ,الطائف, شارع الستين</h4>
+                      <h4 style="float:left;">0992989975-0121258927 :Tel<i class="la la-phone"></i>  </h4><br>     -->
+                      <!-- <h4 class="form-section"><i class="la la-user"></i>  تسليم المركز</h4> -->
 
                         <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;">
                            <tbody> <tr class="text-center" >
@@ -328,53 +377,68 @@
                            <tr class="text-center" >
                             <td style="text-align:right; border: 1px groove black;"><b> مكان الكشف  <b> :</b>  {{  this.plase_data  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b>نوع الفريم   <b> :</b>  {{  this.frame  }} </b> </td>
+                          </tr><tr>
+                           <td style="text-align:right; border: 1px groove black;"><b>نوع العدسات   <b> :</b>  {{  this.form.type  }} </b> </td>
+                          </tr>
+                             </tbody>
+                        </table><br>
+                        <table>
+                          <tbody>
+                          <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>  Progressive      <input v-model="form.progressive" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"  > </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> Bifocal    <input v-model="form.bifocal" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"  > </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> SV     <input v-model="form.sv" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"> </b> </td>
+                         
                           </tr>
                            </tbody>
                         </table><br>
                                 <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;" dir="ltr">
                                     <thead>
-                               <tr>
-                                      <th style="text-align:center; border: 1px solid black;" colspan="4">Right</th>
-                                      <th style="text-align:center; border: 1px solid black;" colspan="4">Left</th>
-                    </tr>
+                      
                     
                                          <tr>
                                      <th style="text-align:center; border: 1px solid black;">#</th>
                                       <th style="text-align:center; border: 1px solid black;"><center>SPH</center></th>
                                      <th style="text-align:center; border: 1px solid black;"> <center>SYL</center></th>
                                      <th style="text-align:center; border: 1px solid black;"><center>AXIS</center></th>
-                                     <th style="text-align:center; border: 1px solid black;"><center>SPH</center></th>
-                                     <th style="text-align:center; border: 1px solid black;"><center>SYL</center></th>
-                                    <th style="text-align:center; border: 1px solid black;"><center>AXIS</center></th>
+                                     <th style="text-align:center; border: 1px solid black;"><center>ِADD1</center></th>
+                                     <th style="text-align:center; border: 1px solid black;"><center>ADD2</center></th>
+                                     <th style="text-align:center; border: 1px solid black;"><center>VA</center></th>
+                                    <th style="text-align:center; border: 1px solid black;"><center>C.lenses</center></th>
                     </tr>
                   </thead>
                   <tbody> 
                     <tr >
-                      <td> Dist</td>
-                      <td style="text-align:right; border: 1px groove black;">{{  this.form.D_R_SPH  }} </td>
+                      <td> Right</td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SPH  }} </center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_AXIS  }}</center></td>
                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_SPH  }} </center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_SYL  }}</center> </td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_AXIS  }} </center></td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_ah1  }} </center></td>
                     </tr>
                       <tr>
-                      <td> Near</td>
+                      <td> Left</td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_SPH  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_AXIS  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_SPH  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_AXIS  }} </center></td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_ah2  }} </center></td>
                     </tr>
-                     <tr>
-                    <td style="text-align:center; border: 1px solid black;" colspan="0">IPD</td>
-                    <td style="text-align:center; border: 1px solid black;" colspan="1">{{  this.form.IPD  }}</td>
+                        </tbody>
+                </table>
+                <br>
+                <table  dir="ltr">
+                <tbody>
+                      <tr>
+                    <td style="text-align:left; border: 1px solid black;" colspan="0"><b>IPD <b> :</b>{{  this.form.IPD  }}</b></td>
+                    <!-- <td style="text-align:center; border: 1px solid black;" colspan="1">{{  this.form.IPD  }}</td> -->
                     </tr>
                   </tbody>
                 </table>
-                
-                     
                       </div></div>
                         <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">الغاء</button>
@@ -410,6 +474,7 @@
                   D_L_SPH:'',
                   D_L_SYL:'',
                   D_L_AXIS:'',
+                  D_L_ah1:'',
 
                   N_R_SPH:'',
                   N_R_SYL:'',
@@ -417,9 +482,15 @@
                   N_L_SPH:'',
                   N_L_SYL:'',
                   N_L_AXIS:'',
+                  N_L_ah2:'',
+
+                  progressive:'',
+                  bifocal:'',
+                  sv:'',
 
                   IPD:'',
                   prodect_id:'',
+                  type:'',
 
                   plase:'',
                   note:'',
@@ -500,7 +571,7 @@ this.frame = $("#prodect_id option:selected").text();
   
    loadprodects(){
 
-        axios.get("api/orders").then(({ data }) => (this.products = data.prodects.data));
+        axios.get("api/orders").then(({ data }) => (this.products = data.prodects));
         
         },
         

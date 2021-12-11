@@ -347,7 +347,7 @@ axios.get(`api/prodects/${this.dateone}/${this.datetwo}`).then(({ data }) => (th
 
 
 }else if(this.reporttype==3){
-        axios.get("api/prodects").then(({ data }) => (this.datacame = data.prodect.data));
+        axios.get("api/report_pro").then(({ data }) => (this.datacame = data.databack));
 this.table=true;
 }else{
   this.table=false;

@@ -18,13 +18,27 @@ class OrdesController extends Controller
     public function index()
     {      
         // return Orders::latest()->paginate(10);
-        $orders= Orders::with('prodect')->latest()->paginate(10);
-        $prodect= Prodect::latest()->paginate(10);
+        $orders= Orders::with('prodect')->latest()->paginate(5);
+        $prodect= Prodect::all();
         $orders_amount= Orders::latest()->sum('payed');
 
 
         return response()->json(['orders'=>$orders,'orders_amount'=>$orders_amount,'prodects'=>$prodect]);
     }
+
+    public function search()
+    {
+        if ($search= \Request::get('q')){
+            $Orders=Orders::with('prodect')->where(function($query) use ($search){
+                $query->where('clint_name','LIKE',"%$search%")->
+                orwhere('clint_phone','LIKE',"%$search%");
+            })->paginate(5);
+        }else{
+            $Orders= Orders::with('prodect')->latest()->paginate(5);
+        }
+
+        return $Orders;    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -46,6 +60,7 @@ class OrdesController extends Controller
             'D_L_SPH' => $request['D_L_SPH'],
             'D_L_SYL' => $request['D_L_SYL'],
             'D_L_AXIS' => $request['D_L_AXIS'],
+            'D_L_ah1' => $request['D_L_ah1'],
 
             'N_R_SPH' => $request['N_R_SPH'],
             'N_R_SYL' => $request['N_R_SYL'],
@@ -53,10 +68,16 @@ class OrdesController extends Controller
             'N_L_SPH' => $request['N_L_SPH'],
             'N_L_SYL' => $request['N_L_SYL'],
             'N_L_AXIS' => $request['N_L_AXIS'],
+            'N_L_ah2' => $request['N_L_ah2'],
+
+            'progressive' => $request['progressive'],
+            'bifocal' => $request['bifocal'],
+            'sv' => $request['sv'],
 
             'IPD' => $request['IPD'],
             'plase' => $request['plase'],
             'prise' => $request['price'],
+            'type' => $request['type'],
             'discount' => $request['discount'],
             'amount_after' => $request['amount_after'],
             'payed' => $request['payed'],
@@ -130,5 +151,10 @@ class OrdesController extends Controller
     {
          $users=Orders::with('prodect')->where('prodect_id',[$prodect])->get();
          return response()->json(['databack'=>$users]);
+    }
+    public function report_ord()
+    {
+        $orders= Orders::with('prodect')->get();
+         return response()->json(['databack'=>$orders]);
     }
 }

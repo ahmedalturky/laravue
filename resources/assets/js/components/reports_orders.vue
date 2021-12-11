@@ -380,7 +380,7 @@ axios.get(`api/report_orders/${this.dateone}/${this.datetwo}`).then(({ data }) =
 
 
 }else if(this.reporttype==3){
-        axios.get("api/orders").then(({ data }) => (this.datacame = data.orders.data));
+        axios.get("api/report_ord").then(({ data }) => (this.datacame = data.databack));
 this.table=true;
 }else if(this.reporttype==4){
    

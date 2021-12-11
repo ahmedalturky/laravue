@@ -6347,7 +6347,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(230)
+var listToStyles = __webpack_require__(231)
 
 /*
 type StyleObject = {
@@ -35889,7 +35889,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(156);
-module.exports = __webpack_require__(243);
+module.exports = __webpack_require__(244);
 
 
 /***/ }),
@@ -35973,12 +35973,13 @@ window.Fire = new __WEBPACK_IMPORTED_MODULE_3_vue___default.a();
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('pagination', __webpack_require__(227));
 
-__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-clients', __webpack_require__(227));
+__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-clients', __webpack_require__(228));
 
-__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-authorized-clients', __webpack_require__(233));
+__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-authorized-clients', __webpack_require__(234));
 
-__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-personal-access-tokens', __webpack_require__(238));
+__WEBPACK_IMPORTED_MODULE_3_vue___default.a.component('passport-personal-access-tokens', __webpack_require__(239));
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
@@ -96841,12 +96842,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
 
       editmode: false,
+      search: '',
       expenses: {},
       expenses_total: '',
       form: new Form({
@@ -96862,8 +96878,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
-    updateUser: function updateUser() {
+    searchit: function searchit() {
+      Fire.$emit('searching');
+    },
+    getResults: function getResults() {
       var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/expenses?page=' + page).then(function (response) {
+        _this.expenses = response.data.expenses;
+      });
+    },
+    updateUser: function updateUser() {
+      var _this2 = this;
 
       this.$Progress.start();
       this.form.put('api/expenses/' + this.form.id).then(function () {
@@ -96871,10 +96899,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         $('#addnew').modal('hide');
         swal.fire('تعديل !', 'تم التعديل بنجاح ', 'success');
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
         Fire.$emit('AfterCreate');
       }).catch(function () {
-        _this.$Progress.fail();
+        _this2.$Progress.fail();
       });
     },
     editModel: function editModel(user) {
@@ -96893,7 +96921,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     deleteuser: function deleteuser(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       // sweet alert 
       swal.fire({
@@ -96908,7 +96936,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
           // send Http Delete requst 
-          _this2.form.delete('api/expenses/' + id).then(function () {
+          _this3.form.delete('api/expenses/' + id).then(function () {
             swal.fire('حذف!', 'تم حذف هذا المنصرف.', 'success');
             // fire for Refreshing page
             Fire.$emit('AfterCreate');
@@ -96919,15 +96947,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadUsers: function loadUsers() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("api/expenses").then(function (_ref) {
         var data = _ref.data;
-        return _this3.expenses = data.expenses.data;
+        return _this4.expenses = data.expenses;
       });
       axios.get("api/expenses").then(function (_ref2) {
         var data = _ref2.data;
-        return _this3.expenses_total = data.expenses_total;
+        return _this4.expenses_total = data.expenses_total;
       });
     },
     createuser: function createuser() {
@@ -96947,12 +96975,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
+    Fire.$on('searching', function () {
+      var query = _this5.search;
+      axios.get('api/findexpenses?q=' + query).then(function (data) {
+        _this5.expenses = data.data;
+      }).catch(function () {});
+    });
     this.loadUsers();
     // Refrash page 
     Fire.$on('AfterCreate', function () {
-      _this4.loadUsers();
+      _this5.loadUsers();
     });
 
     // setInterval(() => this.loadUsers(),3000);
@@ -96977,24 +97011,59 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-tools" }, [
-              _c(
-                "button",
-                { staticClass: "btn btn-success", on: { click: _vm.newModel } },
-                [
-                  _vm._v("اضافة منصرف\n                  "),
-                  _c("i", { staticClass: "la la-plus" })
-                ]
-              )
+              _c("div", { staticClass: "btn pull-left" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: { click: _vm.newModel }
+                  },
+                  [
+                    _vm._v("اضافة منصرف\n                    "),
+                    _c("i", { staticClass: "la la-plus" })
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "input-group" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "search",
+                    placeholder: "بحث (اسم المنصرف او المبلغ )"
+                  },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                })
+              ])
             ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover" }, [
-              _vm._m(0),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.expenses, function(expense) {
+                _vm._l(_vm.expenses.data, function(expense) {
                   return _c("tr", { key: expense.id }, [
                     _c("td", [_vm._v(_vm._s(expense.id))]),
                     _vm._v(" "),
@@ -97020,7 +97089,7 @@ var render = function() {
                         [_c("i", { staticClass: "la la-edit" })]
                       ),
                       _vm._v(
-                        "\n                      /\n                      "
+                        "\n                        /\n                        "
                       ),
                       _c(
                         "a",
@@ -97040,7 +97109,19 @@ var render = function() {
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.expenses },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ]),
       _vm._v(" "),
@@ -97049,7 +97130,7 @@ var render = function() {
           _c("div", { staticClass: "card-content" }, [
             _c("div", { staticClass: "card-body pb-1" }, [
               _c("div", { staticClass: "row text-white" }, [
-                _vm._m(1),
+                _vm._m(2),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-6 text-right" }, [
                   _c("h3", { staticClass: "text-white mb-2" }, [
@@ -97126,7 +97207,7 @@ var render = function() {
                   [_vm._v(" تعديل منصرف")]
                 ),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(3)
               ]),
               _vm._v(" "),
               _c(
@@ -97155,7 +97236,8 @@ var render = function() {
                         attrs: {
                           type: "text",
                           name: "name",
-                          placeholder: "اسم المنصرف"
+                          placeholder: "اسم المنصرف",
+                          required: ""
                         },
                         domProps: { value: _vm.form.name },
                         on: {
@@ -97191,7 +97273,8 @@ var render = function() {
                         attrs: {
                           type: "number",
                           name: "amount",
-                          placeholder: "المبلغ"
+                          placeholder: "المبلغ",
+                          required: ""
                         },
                         domProps: { value: _vm.form.amount },
                         on: {
@@ -97224,11 +97307,7 @@ var render = function() {
                           }
                         ],
                         staticClass: "form-control",
-                        attrs: {
-                          type: "date",
-                          name: "date",
-                          placeholder: "تفاصيل "
-                        },
+                        attrs: { type: "date", name: "date", required: "" },
                         domProps: { value: _vm.form.date },
                         on: {
                           input: function($event) {
@@ -97336,6 +97415,16 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "ficon ft-search" })
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -97834,6 +97923,70 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -97857,6 +98010,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         D_L_SPH: '',
         D_L_SYL: '',
         D_L_AXIS: '',
+        D_L_ah1: '',
 
         N_R_SPH: '',
         N_R_SYL: '',
@@ -97864,9 +98018,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         N_L_SPH: '',
         N_L_SYL: '',
         N_L_AXIS: '',
+        N_L_ah2: '',
+
+        progressive: '',
+        bifocal: '',
+        sv: '',
 
         IPD: '',
         prodect_id: '',
+        type: '',
 
         plase: '',
         note: '',
@@ -97941,7 +98101,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       axios.get("api/orders").then(function (_ref) {
         var data = _ref.data;
-        return _this2.products = data.prodects.data;
+        return _this2.products = data.prodects;
       });
     }
   },
@@ -98218,8 +98378,6 @@ var render = function() {
                               },
                               [
                                 _c("thead", [
-                                  _vm._m(5),
-                                  _vm._v(" "),
                                   _c("tr", [
                                     _c("th", [_vm._v("#")]),
                                     _vm._v(" "),
@@ -98243,19 +98401,21 @@ var render = function() {
                                     _vm._v(" "),
                                     _c(
                                       "th",
-                                      [_c("center", [_vm._v("SPH")])],
+                                      [_c("center", [_vm._v("ADD1")])],
                                       1
                                     ),
                                     _vm._v(" "),
                                     _c(
                                       "th",
-                                      [_c("center", [_vm._v("SYL")])],
+                                      [_c("center", [_vm._v("ADD2")])],
                                       1
                                     ),
                                     _vm._v(" "),
+                                    _c("th", [_c("center", [_vm._v("VA")])], 1),
+                                    _vm._v(" "),
                                     _c(
                                       "th",
-                                      [_c("center", [_vm._v("AXIS")])],
+                                      [_c("center", [_vm._v("C.lenses")])],
                                       1
                                     )
                                   ])
@@ -98263,7 +98423,7 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("tbody", [
                                   _c("tr", [
-                                    _c("td", [_vm._v(" Dist")]),
+                                    _c("td", [_vm._v(" Right")]),
                                     _vm._v(" "),
                                     _c(
                                       "td",
@@ -98521,11 +98681,54 @@ var render = function() {
                                         ])
                                       ],
                                       1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      [
+                                        _c("center", [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.D_L_ah1,
+                                                expression: "form.D_L_ah1"
+                                              }
+                                            ],
+                                            staticClass:
+                                              "form-control border-primary",
+                                            staticStyle: { width: "80px" },
+                                            attrs: {
+                                              type: "number",
+                                              id: "userinput3",
+                                              step: "0.01",
+                                              name: "D_L_ah1"
+                                            },
+                                            domProps: {
+                                              value: _vm.form.D_L_ah1
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "D_L_ah1",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          })
+                                        ])
+                                      ],
+                                      1
                                     )
                                   ]),
                                   _vm._v(" "),
                                   _c("tr", [
-                                    _c("td", [_vm._v(" Near")]),
+                                    _c("td", [_vm._v(" Left")]),
                                     _vm._v(" "),
                                     _c(
                                       "td",
@@ -98783,6 +98986,49 @@ var render = function() {
                                         ])
                                       ],
                                       1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      [
+                                        _c("center", [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.N_L_ah2,
+                                                expression: "form.N_L_ah2"
+                                              }
+                                            ],
+                                            staticClass:
+                                              "form-control border-primary",
+                                            staticStyle: { width: "80px" },
+                                            attrs: {
+                                              type: "number",
+                                              id: "userinput3",
+                                              step: "0.01",
+                                              name: "N_L_ah2"
+                                            },
+                                            domProps: {
+                                              value: _vm.form.N_L_ah2
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "N_L_ah2",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          })
+                                        ])
+                                      ],
+                                      1
                                     )
                                   ])
                                 ])
@@ -98792,6 +99038,213 @@ var render = function() {
                         ),
                         _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group row" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "col-md-3 label-control",
+                                  attrs: { for: "userinput4" }
+                                },
+                                [_vm._v("Progressive")]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col-md-5" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.progressive,
+                                      expression: "form.progressive"
+                                    }
+                                  ],
+                                  staticClass:
+                                    "state icheckbox_minimal checked mr-1",
+                                  attrs: {
+                                    type: "checkbox",
+                                    id: "userinput4",
+                                    placeholder: "",
+                                    name: "progressive"
+                                  },
+                                  domProps: {
+                                    checked: Array.isArray(_vm.form.progressive)
+                                      ? _vm._i(_vm.form.progressive, null) > -1
+                                      : _vm.form.progressive
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$a = _vm.form.progressive,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = null,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "progressive",
+                                              $$a.concat([$$v])
+                                            )
+                                        } else {
+                                          $$i > -1 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "progressive",
+                                              $$a
+                                                .slice(0, $$i)
+                                                .concat($$a.slice($$i + 1))
+                                            )
+                                        }
+                                      } else {
+                                        _vm.$set(_vm.form, "progressive", $$c)
+                                      }
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group row" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "col-md-3 label-control",
+                                  attrs: { for: "userinput4" }
+                                },
+                                [_vm._v("Bifocal")]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col-md-5" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.bifocal,
+                                      expression: "form.bifocal"
+                                    }
+                                  ],
+                                  staticClass:
+                                    "state icheckbox_minimal checked mr-1",
+                                  attrs: {
+                                    type: "checkbox",
+                                    id: "userinput4",
+                                    placeholder: "",
+                                    name: "bifocal"
+                                  },
+                                  domProps: {
+                                    checked: Array.isArray(_vm.form.bifocal)
+                                      ? _vm._i(_vm.form.bifocal, null) > -1
+                                      : _vm.form.bifocal
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$a = _vm.form.bifocal,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = null,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "bifocal",
+                                              $$a.concat([$$v])
+                                            )
+                                        } else {
+                                          $$i > -1 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "bifocal",
+                                              $$a
+                                                .slice(0, $$i)
+                                                .concat($$a.slice($$i + 1))
+                                            )
+                                        }
+                                      } else {
+                                        _vm.$set(_vm.form, "bifocal", $$c)
+                                      }
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("div", { staticClass: "form-group row" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "col-md-3 label-control",
+                                  attrs: { for: "userinput4" }
+                                },
+                                [_vm._v("S.V")]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col-md-5" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.sv,
+                                      expression: "form.sv"
+                                    }
+                                  ],
+                                  staticClass:
+                                    "state icheckbox_minimal checked mr-1",
+                                  attrs: {
+                                    type: "checkbox",
+                                    id: "userinput4",
+                                    placeholder: "",
+                                    name: "sv"
+                                  },
+                                  domProps: {
+                                    checked: Array.isArray(_vm.form.sv)
+                                      ? _vm._i(_vm.form.sv, null) > -1
+                                      : _vm.form.sv
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$a = _vm.form.sv,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = null,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "sv",
+                                              $$a.concat([$$v])
+                                            )
+                                        } else {
+                                          $$i > -1 &&
+                                            _vm.$set(
+                                              _vm.form,
+                                              "sv",
+                                              $$a
+                                                .slice(0, $$i)
+                                                .concat($$a.slice($$i + 1))
+                                            )
+                                        }
+                                      } else {
+                                        _vm.$set(_vm.form, "sv", $$c)
+                                      }
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
                           _c("div", { staticClass: "col-md-4" }, [
                             _c("div", { staticClass: "form-group row" }, [
                               _c(
@@ -98839,6 +99292,53 @@ var render = function() {
                             ])
                           ]),
                           _vm._v(" "),
+                          _c("div", { staticClass: "col-md-5" }, [
+                            _c("div", { staticClass: "form-group row" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "col-md-3 label-control",
+                                  attrs: { for: "userinput5" }
+                                },
+                                [_vm._v(" نوع العدسات")]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col-md-5" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.type,
+                                      expression: "form.type"
+                                    }
+                                  ],
+                                  staticClass: "form-control border-primary",
+                                  attrs: {
+                                    type: "text",
+                                    placeholder: "  ",
+                                    id: "userinput5",
+                                    name: "type",
+                                    step: "0.01"
+                                  },
+                                  domProps: { value: _vm.form.type },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "type",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
                           _c("div", { staticClass: "col-md-4" }, [
                             _c("div", { staticClass: "form-group row" }, [
                               _c(
@@ -98863,7 +99363,11 @@ var render = function() {
                                       }
                                     ],
                                     staticClass: "form-control",
-                                    attrs: { id: "plase", name: "plase" },
+                                    attrs: {
+                                      id: "plase",
+                                      name: "plase",
+                                      required: ""
+                                    },
                                     on: {
                                       change: function($event) {
                                         var $$selectedVal = Array.prototype.filter
@@ -98931,7 +99435,8 @@ var render = function() {
                                     staticClass: "form-control",
                                     attrs: {
                                       id: "prodect_id",
-                                      name: "prodect_id"
+                                      name: "prodect_id",
+                                      required: ""
                                     },
                                     on: {
                                       change: function($event) {
@@ -99008,7 +99513,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(6),
+                    _vm._m(5),
                     _vm._v(" "),
                     _c("div", { staticClass: "row" }, [
                       _c("div", { staticClass: "col-md-6" }, [
@@ -99082,7 +99587,8 @@ var render = function() {
                                 type: "number",
                                 placeholder: "التخفيض",
                                 id: "discount",
-                                name: "discount"
+                                name: "discount",
+                                required: ""
                               },
                               domProps: { value: _vm.form.discount },
                               on: {
@@ -99166,7 +99672,8 @@ var render = function() {
                                 type: "number",
                                 placeholder: "المدفوع",
                                 id: "payed",
-                                name: "payed"
+                                name: "payed",
+                                required: ""
                               },
                               domProps: { value: _vm.form.payed },
                               on: {
@@ -99231,7 +99738,7 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(7)
+                  _vm._m(6)
                 ]
               )
             ])
@@ -99292,7 +99799,7 @@ var render = function() {
                     [_vm._v(" تعديل بيانات الطلب")]
                   ),
                   _vm._v(" "),
-                  _vm._m(8)
+                  _vm._m(7)
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "form-body" }, [
@@ -99331,18 +99838,25 @@ var render = function() {
                       _vm._v(" "),
                       _c("center", [
                         _c("h3", { staticClass: "brand-text" }, [
-                          _vm._v("أوبتيزون للبصريات")
+                          _vm._v("مركز أوبتيزون للبصريات")
                         ]),
-                        _vm._v(" "),
-                        _c("br"),
                         _vm._v(" "),
                         _c("h3", { staticClass: "brand-text" }, [
                           _vm._v("Optizone Optics")
+                        ]),
+                        _vm._v(" "),
+                        _c("h4", { staticClass: "form-section" }, [
+                          _c("i", { staticClass: "la la-home" }),
+                          _vm._v(
+                            "  الخرطوم-الطائف-شارع الستين-جوار كليةالرياض العالمية"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("h4", [
+                          _vm._v("0992989975-0121258927 :Tel"),
+                          _c("i", { staticClass: "la la-phone" })
                         ])
                       ]),
-                      _c("br"),
-                      _vm._v(" "),
-                      _vm._m(9),
                       _vm._v(" "),
                       _c(
                         "table",
@@ -99482,13 +99996,32 @@ var render = function() {
                                 },
                                 [
                                   _c("b", [
+                                    _vm._v("نوع العدسات   "),
+                                    _c("b", [_vm._v(" :")]),
+                                    _vm._v("  " + _vm._s(this.form.type) + " ")
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                {
+                                  staticStyle: {
+                                    "text-align": "right",
+                                    border: "1px groove black"
+                                  }
+                                },
+                                [
+                                  _c("b", [
                                     _vm._v(" المبلغ الكلي  "),
                                     _c("b", [_vm._v(" :")]),
                                     _vm._v("  " + _vm._s(this.form.price) + " ")
                                   ])
                                 ]
-                              ),
-                              _vm._v(" "),
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("tr", { staticClass: "text-center" }, [
                               _c(
                                 "td",
                                 {
@@ -99506,10 +100039,8 @@ var render = function() {
                                     )
                                   ])
                                 ]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("tr", { staticClass: "text-center" }, [
+                              ),
+                              _vm._v(" "),
                               _c(
                                 "td",
                                 {
@@ -99529,8 +100060,10 @@ var render = function() {
                                     )
                                   ])
                                 ]
-                              ),
-                              _vm._v(" "),
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("tr", { staticClass: "text-center" }, [
                               _c(
                                 "td",
                                 {
@@ -99546,10 +100079,8 @@ var render = function() {
                                     _vm._v("  " + _vm._s(this.form.payed) + " ")
                                   ])
                                 ]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("tr", { staticClass: "text-center" }, [
+                              ),
+                              _vm._v(" "),
                               _c(
                                 "td",
                                 {
@@ -99591,10 +100122,8 @@ var render = function() {
                           ])
                         ]
                       ),
-                      _c("br"),
                       _vm._v(" "),
-                      _vm._m(10),
-                      _c("br"),
+                      _vm._m(8),
                       _vm._v(" "),
                       _c("h3", [
                         _vm._v(
@@ -99630,18 +100159,13 @@ var render = function() {
                       _vm._v(" "),
                       _c("center", [
                         _c("h3", { staticClass: "brand-text" }, [
-                          _vm._v("أوبتيزون للبصريات")
+                          _vm._v("مركز أوبتيزون للبصريات")
                         ]),
-                        _vm._v(" "),
-                        _c("br"),
                         _vm._v(" "),
                         _c("h3", { staticClass: "brand-text" }, [
                           _vm._v("Optizone Optics")
                         ])
                       ]),
-                      _c("br"),
-                      _vm._v(" "),
-                      _vm._m(11),
                       _vm._v(" "),
                       _c(
                         "table",
@@ -99768,10 +100292,239 @@ var render = function() {
                                   ])
                                 ]
                               )
+                            ]),
+                            _c("tr", [
+                              _c(
+                                "td",
+                                {
+                                  staticStyle: {
+                                    "text-align": "right",
+                                    border: "1px groove black"
+                                  }
+                                },
+                                [
+                                  _c("b", [
+                                    _vm._v("نوع العدسات   "),
+                                    _c("b", [_vm._v(" :")]),
+                                    _vm._v("  " + _vm._s(this.form.type) + " ")
+                                  ])
+                                ]
+                              )
                             ])
                           ])
                         ]
                       ),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("table", [
+                        _c("tbody", [
+                          _c("tr", { staticClass: "text-center" }, [
+                            _c(
+                              "td",
+                              {
+                                staticStyle: {
+                                  "text-align": "right",
+                                  border: "1px groove black"
+                                }
+                              },
+                              [
+                                _c("b", [
+                                  _vm._v("  Progressive      "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.progressive,
+                                        expression: "form.progressive"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      disabled: "false",
+                                      id: "userinput4"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(
+                                        _vm.form.progressive
+                                      )
+                                        ? _vm._i(_vm.form.progressive, null) >
+                                          -1
+                                        : _vm.form.progressive
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.progressive,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "progressive",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "progressive",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "progressive", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticStyle: {
+                                  "text-align": "right",
+                                  border: "1px groove black"
+                                }
+                              },
+                              [
+                                _c("b", [
+                                  _vm._v(" Bifocal    "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.bifocal,
+                                        expression: "form.bifocal"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      disabled: "false",
+                                      id: "userinput4"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(_vm.form.bifocal)
+                                        ? _vm._i(_vm.form.bifocal, null) > -1
+                                        : _vm.form.bifocal
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.bifocal,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "bifocal",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "bifocal",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "bifocal", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              {
+                                staticStyle: {
+                                  "text-align": "right",
+                                  border: "1px groove black"
+                                }
+                              },
+                              [
+                                _c("b", [
+                                  _vm._v(" SV     "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.sv,
+                                        expression: "form.sv"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      disabled: "false",
+                                      id: "userinput4"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(_vm.form.sv)
+                                        ? _vm._i(_vm.form.sv, null) > -1
+                                        : _vm.form.sv
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.sv,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "sv",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "sv",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "sv", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ]
+                            )
+                          ])
+                        ])
+                      ]),
                       _c("br"),
                       _vm._v(" "),
                       _c(
@@ -99790,8 +100543,6 @@ var render = function() {
                         },
                         [
                           _c("thead", [
-                            _vm._m(12),
-                            _vm._v(" "),
                             _c("tr", [
                               _c(
                                 "th",
@@ -99848,7 +100599,7 @@ var render = function() {
                                     border: "1px solid black"
                                   }
                                 },
-                                [_c("center", [_vm._v("SPH")])],
+                                [_c("center", [_vm._v("ِADD1")])],
                                 1
                               ),
                               _vm._v(" "),
@@ -99860,7 +100611,7 @@ var render = function() {
                                     border: "1px solid black"
                                   }
                                 },
-                                [_c("center", [_vm._v("SYL")])],
+                                [_c("center", [_vm._v("ADD2")])],
                                 1
                               ),
                               _vm._v(" "),
@@ -99872,7 +100623,19 @@ var render = function() {
                                     border: "1px solid black"
                                   }
                                 },
-                                [_c("center", [_vm._v("AXIS")])],
+                                [_c("center", [_vm._v("VA")])],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "th",
+                                {
+                                  staticStyle: {
+                                    "text-align": "center",
+                                    border: "1px solid black"
+                                  }
+                                },
+                                [_c("center", [_vm._v("C.lenses")])],
                                 1
                               )
                             ])
@@ -99880,7 +100643,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("tbody", [
                             _c("tr", [
-                              _c("td", [_vm._v(" Dist")]),
+                              _c("td", [_vm._v(" Right")]),
                               _vm._v(" "),
                               _c(
                                 "td",
@@ -99890,7 +100653,12 @@ var render = function() {
                                     border: "1px groove black"
                                   }
                                 },
-                                [_vm._v(_vm._s(this.form.D_R_SPH) + " ")]
+                                [
+                                  _c("center", [
+                                    _vm._v(_vm._s(this.form.D_R_SPH) + " ")
+                                  ])
+                                ],
+                                1
                               ),
                               _vm._v(" "),
                               _c(
@@ -99971,11 +100739,27 @@ var render = function() {
                                   ])
                                 ],
                                 1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                {
+                                  staticStyle: {
+                                    "text-align": "right",
+                                    border: "1px groove black"
+                                  }
+                                },
+                                [
+                                  _c("center", [
+                                    _vm._v(_vm._s(this.form.D_L_ah1) + " ")
+                                  ])
+                                ],
+                                1
                               )
                             ]),
                             _vm._v(" "),
                             _c("tr", [
-                              _c("td", [_vm._v(" Near")]),
+                              _c("td", [_vm._v(" Left")]),
                               _vm._v(" "),
                               _c(
                                 "td",
@@ -100071,37 +100855,53 @@ var render = function() {
                                   ])
                                 ],
                                 1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("tr", [
-                              _c(
-                                "td",
-                                {
-                                  staticStyle: {
-                                    "text-align": "center",
-                                    border: "1px solid black"
-                                  },
-                                  attrs: { colspan: "0" }
-                                },
-                                [_vm._v("IPD")]
                               ),
                               _vm._v(" "),
                               _c(
                                 "td",
                                 {
                                   staticStyle: {
-                                    "text-align": "center",
-                                    border: "1px solid black"
-                                  },
-                                  attrs: { colspan: "1" }
+                                    "text-align": "right",
+                                    border: "1px groove black"
+                                  }
                                 },
-                                [_vm._v(_vm._s(this.form.IPD))]
+                                [
+                                  _c("center", [
+                                    _vm._v(_vm._s(this.form.N_L_ah2) + " ")
+                                  ])
+                                ],
+                                1
                               )
                             ])
                           ])
                         ]
-                      )
+                      ),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("table", { attrs: { dir: "ltr" } }, [
+                        _c("tbody", [
+                          _c("tr", [
+                            _c(
+                              "td",
+                              {
+                                staticStyle: {
+                                  "text-align": "left",
+                                  border: "1px solid black"
+                                },
+                                attrs: { colspan: "0" }
+                              },
+                              [
+                                _c("b", [
+                                  _vm._v("IPD "),
+                                  _c("b", [_vm._v(" :")]),
+                                  _vm._v(_vm._s(this.form.IPD))
+                                ])
+                              ]
+                            )
+                          ])
+                        ])
+                      ])
                     ],
                     1
                   )
@@ -100205,16 +101005,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", { attrs: { colspan: "4" } }, [_vm._v("Right")]),
-      _vm._v(" "),
-      _c("th", { attrs: { colspan: "4" } }, [_vm._v("Left")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("h4", { staticClass: "form-section" }, [
       _c("i", { staticClass: "la la-money" }),
       _vm._v(" الحسابات")
@@ -100268,64 +101058,32 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h4", { staticClass: "form-section" }, [
-      _c("i", { staticClass: "la la-user" }),
-      _vm._v("  استلام الزبون")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticStyle: { "text-align": "right" } }, [
+      _c("br"),
+      _vm._v(" "),
       _c("b", [
         _vm._v(
-          "-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .\n-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .\n-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله ."
+          "-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .\n"
         ),
         _c("br"),
         _vm._v(
-          "\n-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال ."
+          "-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .\n"
         ),
         _c("br"),
-        _vm._v("\n-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز."),
+        _vm._v("-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .\n"),
         _c("br"),
         _vm._v(
-          "\n-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات ."
+          "-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال ."
+        ),
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v("-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.\n"),
+        _c("br"),
+        _vm._v(
+          "-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .\n                            "
         )
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h4", { staticClass: "form-section" }, [
-      _c("i", { staticClass: "la la-user" }),
-      _vm._v("  تسليم المركز")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c(
-        "th",
-        {
-          staticStyle: { "text-align": "center", border: "1px solid black" },
-          attrs: { colspan: "4" }
-        },
-        [_vm._v("Right")]
-      ),
-      _vm._v(" "),
-      _c(
-        "th",
-        {
-          staticStyle: { "text-align": "center", border: "1px solid black" },
-          attrs: { colspan: "4" }
-        },
-        [_vm._v("Left")]
-      )
     ])
   }
 ]
@@ -100627,6 +101385,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -100657,8 +101419,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
-    updateUser: function updateUser() {
+    getResults: function getResults() {
       var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/expenses?page=' + page).then(function (response) {
+        _this.datacame = response.data.expenses;
+      });
+    },
+    updateUser: function updateUser() {
+      var _this2 = this;
 
       this.$Progress.start();
       this.form.put('api/user/' + this.form.id).then(function () {
@@ -100666,10 +101437,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         $('#addnew').modal('hide');
         swal.fire('Updated!', 'Information has been update', 'success');
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
         Fire.$emit('AfterCreate');
       }).catch(function () {
-        _this.$Progress.fail();
+        _this2.$Progress.fail();
       });
     },
     print: function print() {
@@ -100703,12 +101474,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       // alert(data.target.value);
     },
     getdate: function getdate() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.reporttype == 2) {
         axios.get('api/report_expense/' + this.dateone + '/' + this.datetwo).then(function (_ref) {
           var data = _ref.data;
-          return _this2.datacame = data.databack;
+          return _this3.datacame = data.databack;
         });
         //Array.isArray(this.datacame)==false
 
@@ -100716,14 +101487,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       } else if (this.reporttype == 1) {
         axios.get('api/report_expensed/' + this.amountone + '/' + this.amountwo).then(function (_ref2) {
           var data = _ref2.data;
-          return _this2.datacame = data.databack;
+          return _this3.datacame = data.databack;
         });
 
         this.table = true;
       } else if (this.reporttype == 3) {
-        axios.get("api/expenses").then(function (_ref3) {
+        axios.get("api/report_ex").then(function (_ref3) {
           var data = _ref3.data;
-          return _this2.datacame = data.expenses.data;
+          return _this3.datacame = data.databack;
         });
         this.table = true;
       } else {
@@ -100741,19 +101512,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }, 10);
     },
     newModel: function newModel() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.editmode = false;
       this.form.reset();
       this.id = 1;
       axios.get('api/useres/' + this.id).then(function (_ref4) {
         var data = _ref4.data;
-        return _this3.datacame = data.data;
+        return _this4.datacame = data.data;
       });
       $('#addnew').modal('show');
     },
     deleteuser: function deleteuser(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       // sweet alert 
       swal.fire({
@@ -100767,7 +101538,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
           // send Http Delete requst 
-          _this4.form.delete('api/user/' + id).then(function () {
+          _this5.form.delete('api/user/' + id).then(function () {
             swal.fire('Deleted!', 'Your file has been deleted.', 'success');
             // fire for Refreshing page
             Fire.$emit('AfterCreate');
@@ -100778,11 +101549,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadUsers: function loadUsers() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get("api/user").then(function (_ref5) {
         var data = _ref5.data;
-        return _this5.users = data.data;
+        return _this6.users = data.data;
       });
     },
     createuser: function createuser() {
@@ -100802,12 +101573,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   created: function created() {
-    var _this6 = this;
+    var _this7 = this;
 
     this.loadUsers();
     // Refrash page 
     Fire.$on('AfterCreate', function () {
-      _this6.loadUsers();
+      _this7.loadUsers();
     });
 
     // setInterval(() => this.loadUsers(),3000);
@@ -101355,7 +102126,10 @@ var render = function() {
                             _vm._v(" "),
                             _c(
                               "tbody",
-                              _vm._l(this.datacae, function(datacams, index) {
+                              _vm._l(this.datacae.data, function(
+                                datacams,
+                                index
+                              ) {
                                 return _c("tr", { key: datacams.id }, [
                                   _c(
                                     "td",
@@ -101983,9 +102757,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.table = true;
       } else if (this.reporttype == 3) {
-        axios.get("api/orders").then(function (_ref3) {
+        axios.get("api/report_ord").then(function (_ref3) {
           var data = _ref3.data;
-          return _this2.datacame = data.orders.data;
+          return _this2.datacame = data.databack;
         });
         this.table = true;
       } else if (this.reporttype == 4) {
@@ -103397,9 +104171,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.table = true;
       } else if (this.reporttype == 3) {
-        axios.get("api/prodects").then(function (_ref3) {
+        axios.get("api/report_pro").then(function (_ref3) {
           var data = _ref3.data;
-          return _this2.datacame = data.prodect.data;
+          return _this2.datacame = data.databack;
         });
         this.table = true;
       } else {
@@ -104753,6 +105527,78 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -104763,6 +105609,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       editmode: false,
       reportdata: false,
       butifele: false,
+      search: '',
       products: [],
       orders: {},
       orders_amount: '',
@@ -104781,6 +105628,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         D_L_SPH: '',
         D_L_SYL: '',
         D_L_AXIS: '',
+        N_L_ah2: '',
 
         N_R_SPH: '',
         N_R_SYL: '',
@@ -104788,10 +105636,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         N_L_SPH: '',
         N_L_SYL: '',
         N_L_AXIS: '',
+        D_L_ah1: '',
+
+        progressive: this.attributes,
+        bifocal: this.attributes,
+        sv: this.attributes,
 
         IPD: '',
         plase: '',
         note: '',
+        type: '',
 
         prise: '',
         discount: '',
@@ -104806,6 +105660,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
+    searchit: function searchit() {
+      Fire.$emit('searching');
+    },
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/orders?page=' + page).then(function (response) {
+        _this.orders = response.data.orders;
+      });
+    },
     printData: function printData() {
       var divToPrint = document.getElementById("Report");
       var newWin = window.open();
@@ -104839,7 +105705,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       // document.getElementById("amount_after").value =val;
     },
     updateUser: function updateUser() {
-      var _this = this;
+      var _this2 = this;
 
       this.$Progress.start();
       this.form.put('api/orders/' + this.form.id).then(function () {
@@ -104847,10 +105713,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         $('#addnew').modal('hide');
         swal.fire('تعديل !', 'تم التعديل بنجاح ', 'success');
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
         Fire.$emit('AfterCreate');
       }).catch(function () {
-        _this.$Progress.fail();
+        _this2.$Progress.fail();
       });
     },
     editModel: function editModel(order) {
@@ -104888,7 +105754,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       $('#addnew').modal('show');
     },
     deleteorder: function deleteorder(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.reportdata = false;
       // sweet alert 
@@ -104904,7 +105770,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
           // send Http Delete requst 
-          _this2.form.delete('api/orders/' + id).then(function () {
+          _this3.form.delete('api/orders/' + id).then(function () {
             swal.fire('حذف!', 'تم حذف هذا الطلب.', 'success');
             // fire for Refreshing page
             Fire.$emit('AfterCreate');
@@ -104915,29 +105781,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadorders: function loadorders() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("api/orders").then(function (_ref) {
         var data = _ref.data;
-        return _this3.orders = data.orders.data;
+        return _this4.orders = data.orders;
       });
       axios.get("api/orders").then(function (_ref2) {
         var data = _ref2.data;
-        return _this3.orders_amount = data.orders_amount;
+        return _this4.orders_amount = data.orders_amount;
       });
       axios.get("api/orders").then(function (_ref3) {
         var data = _ref3.data;
-        return _this3.products = data.prodects.data;
+        return _this4.products = data.prodects.data;
       });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
+    Fire.$on('searching', function () {
+      var query = _this5.search;
+      axios.get('api/findorder?q=' + query).then(function (data) {
+        _this5.orders = data.data;
+      }).catch(function () {});
+    });
     this.loadorders();
     // Refrash page 
     Fire.$on('AfterCreate', function () {
-      _this4.loadorders();
+      _this5.loadorders();
     });
 
     // setInterval(() => this.loadUsers(),3000);
@@ -105925,7 +106797,43 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-12 col-md-9" }, [
         _c("div", { staticClass: "card" }, [
-          _vm._m(0),
+          _c("div", { staticClass: "card-header" }, [
+            _c("h3", { staticClass: "card-title text-center" }, [
+              _vm._v("جدول المبيعات")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools" }, [
+              _c("div", { staticClass: "input-group" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "search",
+                    placeholder: "بحث (اسم او رقم الهاتف )"
+                  },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                })
+              ])
+            ])
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c(
@@ -105939,7 +106847,7 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.orders, function(order) {
+                  _vm._l(_vm.orders.data, function(order) {
                     return _c("tr", { key: order.id }, [
                       _c("td", [_vm._v(_vm._s(order.id))]),
                       _vm._v(" "),
@@ -106013,7 +106921,19 @@ var render = function() {
                 )
               ]
             )
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.orders },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ]),
       _vm._v(" "),
@@ -106161,18 +107081,25 @@ var render = function() {
                             _vm._v(" "),
                             _c("center", [
                               _c("h3", { staticClass: "brand-text" }, [
-                                _vm._v("أوبتيزون للبصريات")
+                                _vm._v("مركز أوبتيزون للبصريات")
                               ]),
-                              _vm._v(" "),
-                              _c("br"),
                               _vm._v(" "),
                               _c("h3", { staticClass: "brand-text" }, [
                                 _vm._v("Optizone Optics")
+                              ]),
+                              _vm._v(" "),
+                              _c("h4", { staticClass: "form-section" }, [
+                                _c("i", { staticClass: "la la-home" }),
+                                _vm._v(
+                                  "  الخرطوم-الطائف-شارع الستين-جوار كليةالرياض العالمية"
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("h4", [
+                                _vm._v("0992989975-0121258927 :Tel"),
+                                _c("i", { staticClass: "la la-phone" })
                               ])
                             ]),
-                            _c("br"),
-                            _vm._v(" "),
-                            _vm._m(4),
                             _vm._v(" "),
                             _c(
                               "table",
@@ -106328,6 +107255,25 @@ var render = function() {
                                       },
                                       [
                                         _c("b", [
+                                          _vm._v("نوع العدسات   "),
+                                          _c("b", [_vm._v(" :")]),
+                                          _vm._v(
+                                            "  " + _vm._s(this.form.type) + " "
+                                          )
+                                        ])
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: {
+                                          "text-align": "right",
+                                          border: "1px groove black"
+                                        }
+                                      },
+                                      [
+                                        _c("b", [
                                           _vm._v(" المبلغ الكلي  "),
                                           _c("b", [_vm._v(" :")]),
                                           _vm._v(
@@ -106339,8 +107285,10 @@ var render = function() {
                                           )
                                         ])
                                       ]
-                                    ),
-                                    _vm._v(" "),
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", { staticClass: "text-center" }, [
                                     _c(
                                       "td",
                                       {
@@ -106360,10 +107308,8 @@ var render = function() {
                                           )
                                         ])
                                       ]
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", { staticClass: "text-center" }, [
+                                    ),
+                                    _vm._v(" "),
                                     _c(
                                       "td",
                                       {
@@ -106387,8 +107333,10 @@ var render = function() {
                                           )
                                         ])
                                       ]
-                                    ),
-                                    _vm._v(" "),
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", { staticClass: "text-center" }, [
                                     _c(
                                       "td",
                                       {
@@ -106410,10 +107358,8 @@ var render = function() {
                                           )
                                         ])
                                       ]
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", { staticClass: "text-center" }, [
+                                    ),
+                                    _vm._v(" "),
                                     _c(
                                       "td",
                                       {
@@ -106465,8 +107411,7 @@ var render = function() {
                             ),
                             _c("br"),
                             _vm._v(" "),
-                            _vm._m(5),
-                            _c("br"),
+                            _vm._m(4),
                             _vm._v(" "),
                             _c("h3", [
                               _vm._v(
@@ -106502,18 +107447,13 @@ var render = function() {
                             _vm._v(" "),
                             _c("center", [
                               _c("h3", { staticClass: "brand-text" }, [
-                                _vm._v("أوبتيزون للبصريات")
+                                _vm._v("مركز أوبتيزون للبصريات")
                               ]),
-                              _vm._v(" "),
-                              _c("br"),
                               _vm._v(" "),
                               _c("h3", { staticClass: "brand-text" }, [
                                 _vm._v("Optizone Optics")
                               ])
                             ]),
-                            _c("br"),
-                            _vm._v(" "),
-                            _vm._m(6),
                             _vm._v(" "),
                             _c(
                               "table",
@@ -106656,10 +107596,286 @@ var render = function() {
                                         ])
                                       ]
                                     )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", { staticClass: "text-center" }, [
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: {
+                                          "text-align": "right",
+                                          border: "1px groove black"
+                                        }
+                                      },
+                                      [
+                                        _c("b", [
+                                          _vm._v("  نوع العدسات  "),
+                                          _c("b", [_vm._v(" :")]),
+                                          _vm._v(
+                                            "  " + _vm._s(this.form.type) + " "
+                                          )
+                                        ])
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: {
+                                          "text-align": "right",
+                                          border: "1px groove black"
+                                        }
+                                      },
+                                      [
+                                        _c("b", [
+                                          _vm._v("ملاحظة    "),
+                                          _c("b", [_vm._v(" :")]),
+                                          _vm._v(
+                                            "  " + _vm._s(this.form.note) + " "
+                                          )
+                                        ])
+                                      ]
+                                    )
                                   ])
                                 ])
                               ]
                             ),
+                            _c("br"),
+                            _vm._v(" "),
+                            _c("table", [
+                              _c("tbody", [
+                                _c("tr", { staticClass: "text-center" }, [
+                                  _c(
+                                    "td",
+                                    {
+                                      staticStyle: {
+                                        "text-align": "right",
+                                        border: "1px groove black"
+                                      }
+                                    },
+                                    [
+                                      _c("b", [
+                                        _vm._v("  Progressive      "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.progressive,
+                                              expression: "form.progressive"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "state icheckbox_minimal checked mr-1",
+                                          attrs: {
+                                            type: "checkbox",
+                                            disabled: "false",
+                                            id: "userinput4"
+                                          },
+                                          domProps: {
+                                            checked: Array.isArray(
+                                              _vm.form.progressive
+                                            )
+                                              ? _vm._i(
+                                                  _vm.form.progressive,
+                                                  null
+                                                ) > -1
+                                              : _vm.form.progressive
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              var $$a = _vm.form.progressive,
+                                                $$el = $event.target,
+                                                $$c = $$el.checked
+                                                  ? true
+                                                  : false
+                                              if (Array.isArray($$a)) {
+                                                var $$v = null,
+                                                  $$i = _vm._i($$a, $$v)
+                                                if ($$el.checked) {
+                                                  $$i < 0 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "progressive",
+                                                      $$a.concat([$$v])
+                                                    )
+                                                } else {
+                                                  $$i > -1 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "progressive",
+                                                      $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        )
+                                                    )
+                                                }
+                                              } else {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "progressive",
+                                                  $$c
+                                                )
+                                              }
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    {
+                                      staticStyle: {
+                                        "text-align": "right",
+                                        border: "1px groove black"
+                                      }
+                                    },
+                                    [
+                                      _c("b", [
+                                        _vm._v(" Bifocal    "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.bifocal,
+                                              expression: "form.bifocal"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "state icheckbox_minimal checked mr-1",
+                                          attrs: {
+                                            type: "checkbox",
+                                            disabled: "false",
+                                            id: "userinput4"
+                                          },
+                                          domProps: {
+                                            checked: Array.isArray(
+                                              _vm.form.bifocal
+                                            )
+                                              ? _vm._i(_vm.form.bifocal, null) >
+                                                -1
+                                              : _vm.form.bifocal
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              var $$a = _vm.form.bifocal,
+                                                $$el = $event.target,
+                                                $$c = $$el.checked
+                                                  ? true
+                                                  : false
+                                              if (Array.isArray($$a)) {
+                                                var $$v = null,
+                                                  $$i = _vm._i($$a, $$v)
+                                                if ($$el.checked) {
+                                                  $$i < 0 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "bifocal",
+                                                      $$a.concat([$$v])
+                                                    )
+                                                } else {
+                                                  $$i > -1 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "bifocal",
+                                                      $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        )
+                                                    )
+                                                }
+                                              } else {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "bifocal",
+                                                  $$c
+                                                )
+                                              }
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    {
+                                      staticStyle: {
+                                        "text-align": "right",
+                                        border: "1px groove black"
+                                      }
+                                    },
+                                    [
+                                      _c("b", [
+                                        _vm._v(" SV     "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.sv,
+                                              expression: "form.sv"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "state icheckbox_minimal checked mr-1",
+                                          attrs: {
+                                            type: "checkbox",
+                                            disabled: "false",
+                                            id: "userinput4"
+                                          },
+                                          domProps: {
+                                            checked: Array.isArray(_vm.form.sv)
+                                              ? _vm._i(_vm.form.sv, null) > -1
+                                              : _vm.form.sv
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              var $$a = _vm.form.sv,
+                                                $$el = $event.target,
+                                                $$c = $$el.checked
+                                                  ? true
+                                                  : false
+                                              if (Array.isArray($$a)) {
+                                                var $$v = null,
+                                                  $$i = _vm._i($$a, $$v)
+                                                if ($$el.checked) {
+                                                  $$i < 0 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "sv",
+                                                      $$a.concat([$$v])
+                                                    )
+                                                } else {
+                                                  $$i > -1 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "sv",
+                                                      $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        )
+                                                    )
+                                                }
+                                              } else {
+                                                _vm.$set(_vm.form, "sv", $$c)
+                                              }
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ]),
                             _c("br"),
                             _vm._v(" "),
                             _c(
@@ -106686,8 +107902,6 @@ var render = function() {
                               },
                               [
                                 _c("thead", [
-                                  _vm._m(7),
-                                  _vm._v(" "),
                                   _c("tr", [
                                     _c(
                                       "th",
@@ -106744,7 +107958,7 @@ var render = function() {
                                           border: "1px solid black"
                                         }
                                       },
-                                      [_c("center", [_vm._v("SPH")])],
+                                      [_c("center", [_vm._v("ADD1")])],
                                       1
                                     ),
                                     _vm._v(" "),
@@ -106756,7 +107970,7 @@ var render = function() {
                                           border: "1px solid black"
                                         }
                                       },
-                                      [_c("center", [_vm._v("SYL")])],
+                                      [_c("center", [_vm._v("ADD2")])],
                                       1
                                     ),
                                     _vm._v(" "),
@@ -106768,7 +107982,19 @@ var render = function() {
                                           border: "1px solid black"
                                         }
                                       },
-                                      [_c("center", [_vm._v("AXIS")])],
+                                      [_c("center", [_vm._v("VA")])],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "th",
+                                      {
+                                        staticStyle: {
+                                          "text-align": "center",
+                                          border: "1px solid black"
+                                        }
+                                      },
+                                      [_c("center", [_vm._v("C.lenses")])],
                                       1
                                     )
                                   ])
@@ -106776,7 +108002,7 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("tbody", [
                                   _c("tr", [
-                                    _c("td", [_vm._v(" Dist")]),
+                                    _c("td", [_vm._v(" Right")]),
                                     _vm._v(" "),
                                     _c(
                                       "td",
@@ -106878,11 +108104,29 @@ var render = function() {
                                         ])
                                       ],
                                       1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: {
+                                          "text-align": "right",
+                                          border: "1px groove black"
+                                        }
+                                      },
+                                      [
+                                        _c("center", [
+                                          _vm._v(
+                                            _vm._s(this.form.D_L_ah1) + " "
+                                          )
+                                        ])
+                                      ],
+                                      1
                                     )
                                   ]),
                                   _vm._v(" "),
                                   _c("tr", [
-                                    _c("td", [_vm._v(" Near")]),
+                                    _c("td", [_vm._v(" Left")]),
                                     _vm._v(" "),
                                     _c(
                                       "td",
@@ -106980,37 +108224,55 @@ var render = function() {
                                         ])
                                       ],
                                       1
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c(
-                                      "td",
-                                      {
-                                        staticStyle: {
-                                          "text-align": "center",
-                                          border: "1px solid black"
-                                        },
-                                        attrs: { colspan: "0" }
-                                      },
-                                      [_vm._v("IPD")]
                                     ),
                                     _vm._v(" "),
                                     _c(
                                       "td",
                                       {
                                         staticStyle: {
-                                          "text-align": "center",
-                                          border: "1px solid black"
-                                        },
-                                        attrs: { colspan: "1" }
+                                          "text-align": "right",
+                                          border: "1px groove black"
+                                        }
                                       },
-                                      [_vm._v(_vm._s(this.form.IPD))]
+                                      [
+                                        _c("center", [
+                                          _vm._v(
+                                            _vm._s(this.form.N_L_ah2) + " "
+                                          )
+                                        ])
+                                      ],
+                                      1
                                     )
                                   ])
                                 ])
                               ]
-                            )
+                            ),
+                            _vm._v(" "),
+                            _c("br"),
+                            _vm._v(" "),
+                            _c("table", { attrs: { dir: "ltr" } }, [
+                              _c("tbody", [
+                                _c("tr", [
+                                  _c(
+                                    "td",
+                                    {
+                                      staticStyle: {
+                                        "text-align": "left",
+                                        border: "1px solid black"
+                                      },
+                                      attrs: { colspan: "0" }
+                                    },
+                                    [
+                                      _c("b", [
+                                        _vm._v("IPD "),
+                                        _c("b", [_vm._v(" :")]),
+                                        _vm._v(_vm._s(this.form.IPD))
+                                      ])
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ])
                           ],
                           1
                         )
@@ -107068,7 +108330,7 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "form-body" }, [
-                      _vm._m(8),
+                      _vm._m(5),
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
                         _c("div", { staticClass: "col-md-6" }, [
@@ -107320,8 +108582,6 @@ var render = function() {
                                 },
                                 [
                                   _c("thead", [
-                                    _vm._m(9),
-                                    _vm._v(" "),
                                     _c("tr", [
                                       _c("th", [_vm._v("#")]),
                                       _vm._v(" "),
@@ -107345,19 +108605,25 @@ var render = function() {
                                       _vm._v(" "),
                                       _c(
                                         "th",
-                                        [_c("center", [_vm._v("SPH")])],
+                                        [_c("center", [_vm._v("ADD1")])],
                                         1
                                       ),
                                       _vm._v(" "),
                                       _c(
                                         "th",
-                                        [_c("center", [_vm._v("SYL")])],
+                                        [_c("center", [_vm._v("ADD2")])],
                                         1
                                       ),
                                       _vm._v(" "),
                                       _c(
                                         "th",
-                                        [_c("center", [_vm._v("AXIS")])],
+                                        [_c("center", [_vm._v("VA")])],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "th",
+                                        [_c("center", [_vm._v("C.lenses")])],
                                         1
                                       )
                                     ])
@@ -107365,7 +108631,7 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("tbody", [
                                     _c("tr", [
-                                      _c("td", [_vm._v(" Dist")]),
+                                      _c("td", [_vm._v(" Right")]),
                                       _vm._v(" "),
                                       _c(
                                         "td",
@@ -107386,6 +108652,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_R_SPH"
                                               },
@@ -107429,6 +108696,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_R_SYL"
                                               },
@@ -107472,6 +108740,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_R_AXIS"
                                               },
@@ -107515,6 +108784,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_L_SPH"
                                               },
@@ -107558,6 +108828,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_L_SYL"
                                               },
@@ -107601,6 +108872,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "D_L_AXIS"
                                               },
@@ -107623,11 +108895,54 @@ var render = function() {
                                           ])
                                         ],
                                         1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "td",
+                                        [
+                                          _c("center", [
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form.D_L_ah1,
+                                                  expression: "form.D_L_ah1"
+                                                }
+                                              ],
+                                              staticClass:
+                                                "form-control border-primary",
+                                              staticStyle: { width: "80px" },
+                                              attrs: {
+                                                type: "number",
+                                                id: "userinput3",
+                                                step: "0.01",
+                                                name: "D_L_ah1"
+                                              },
+                                              domProps: {
+                                                value: _vm.form.D_L_ah1
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    "D_L_ah1",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ])
+                                        ],
+                                        1
                                       )
                                     ]),
                                     _vm._v(" "),
                                     _c("tr", [
-                                      _c("td", [_vm._v(" Near")]),
+                                      _c("td", [_vm._v(" Left")]),
                                       _vm._v(" "),
                                       _c(
                                         "td",
@@ -107648,6 +108963,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_R_SPH"
                                               },
@@ -107691,6 +109007,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_R_SYL"
                                               },
@@ -107734,6 +109051,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_R_AXIS"
                                               },
@@ -107777,6 +109095,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_L_SPH"
                                               },
@@ -107820,6 +109139,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_L_SYL"
                                               },
@@ -107863,6 +109183,7 @@ var render = function() {
                                               attrs: {
                                                 type: "number",
                                                 id: "userinput3",
+                                                step: "0.01",
                                                 placeholder: " ",
                                                 name: "N_L_AXIS"
                                               },
@@ -107885,6 +109206,49 @@ var render = function() {
                                           ])
                                         ],
                                         1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "td",
+                                        [
+                                          _c("center", [
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form.N_L_ah2,
+                                                  expression: "form.N_L_ah2"
+                                                }
+                                              ],
+                                              staticClass:
+                                                "form-control border-primary",
+                                              staticStyle: { width: "80px" },
+                                              attrs: {
+                                                type: "number",
+                                                id: "userinput3",
+                                                step: "0.01",
+                                                name: "N_L_ah2"
+                                              },
+                                              domProps: {
+                                                value: _vm.form.N_L_ah2
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    "N_L_ah2",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ])
+                                        ],
+                                        1
                                       )
                                     ])
                                   ])
@@ -107894,6 +109258,215 @@ var render = function() {
                           ),
                           _vm._v(" "),
                           _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "col-md-3 label-control",
+                                    attrs: { for: "userinput4" }
+                                  },
+                                  [_vm._v("Progressive")]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-5" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.progressive,
+                                        expression: "form.progressive"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      id: "userinput4",
+                                      checked: "",
+                                      name: "progressive"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(
+                                        _vm.form.progressive
+                                      )
+                                        ? _vm._i(_vm.form.progressive, null) >
+                                          -1
+                                        : _vm.form.progressive
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.progressive,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "progressive",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "progressive",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "progressive", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "col-md-3 label-control",
+                                    attrs: { for: "userinput4" }
+                                  },
+                                  [_vm._v("Bifocal")]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-5" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.bifocal,
+                                        expression: "form.bifocal"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      id: "userinput4",
+                                      placeholder: "",
+                                      name: "bifocal"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(_vm.form.bifocal)
+                                        ? _vm._i(_vm.form.bifocal, null) > -1
+                                        : _vm.form.bifocal
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.bifocal,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "bifocal",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "bifocal",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "bifocal", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "col-md-3 label-control",
+                                    attrs: { for: "userinput4" }
+                                  },
+                                  [_vm._v("S.V")]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-5" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.sv,
+                                        expression: "form.sv"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "state icheckbox_minimal checked mr-1",
+                                    attrs: {
+                                      type: "checkbox",
+                                      id: "userinput4",
+                                      name: "sv"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(_vm.form.sv)
+                                        ? _vm._i(_vm.form.sv, null) > -1
+                                        : _vm.form.sv
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form.sv,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "sv",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                "sv",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, "sv", $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
                             _c(
                               "div",
                               {
@@ -107932,6 +109505,7 @@ var render = function() {
                                         "form-control border-primary",
                                       attrs: {
                                         type: "number",
+                                        step: "0.01",
                                         placeholder: "  ",
                                         id: "userinput5",
                                         name: "IPD"
@@ -107954,6 +109528,53 @@ var render = function() {
                                 ])
                               ]
                             ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-5" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "col-md-3 label-control",
+                                    attrs: { for: "userinput5" }
+                                  },
+                                  [_vm._v(" نوع العدسات")]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-5" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.type,
+                                        expression: "form.type"
+                                      }
+                                    ],
+                                    staticClass: "form-control border-primary",
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "  ",
+                                      id: "userinput5",
+                                      name: "type",
+                                      step: "0.01"
+                                    },
+                                    domProps: { value: _vm.form.type },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "type",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "col-md-4" }, [
                               _c("div", { staticClass: "form-group row" }, [
@@ -108134,7 +109755,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(10),
+                      _vm._m(6),
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
                         _c("div", { staticClass: "col-md-6" }, [
@@ -108415,9 +110036,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header" }, [
-      _c("h3", { staticClass: "card-title text-center" }, [
-        _vm._v("جدول المبيعات")
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "ficon ft-search" })
       ])
     ])
   },
@@ -108478,29 +110099,30 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h4", { staticClass: "form-section" }, [
-      _c("i", { staticClass: "la la-user" }),
-      _vm._v("  استلام الزبون")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticStyle: { "text-align": "right" } }, [
+      _c("br"),
+      _vm._v(" "),
       _c("b", [
         _vm._v(
-          "-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .\n-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .\n-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله ."
+          "-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .\n"
         ),
         _c("br"),
         _vm._v(
-          "\n-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال ."
+          "-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .\n"
         ),
         _c("br"),
-        _vm._v("\n-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز."),
+        _vm._v("-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .\n"),
         _c("br"),
         _vm._v(
-          "\n-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات ."
+          "-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال ."
+        ),
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v("-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.\n"),
+        _c("br"),
+        _vm._v(
+          "-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .\n                            "
         )
       ])
     ])
@@ -108511,50 +110133,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("h4", { staticClass: "form-section" }, [
       _c("i", { staticClass: "la la-user" }),
-      _vm._v("  تسليم المركز")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c(
-        "th",
-        {
-          staticStyle: { "text-align": "center", border: "1px solid black" },
-          attrs: { colspan: "4" }
-        },
-        [_vm._v("Right")]
-      ),
-      _vm._v(" "),
-      _c(
-        "th",
-        {
-          staticStyle: { "text-align": "center", border: "1px solid black" },
-          attrs: { colspan: "4" }
-        },
-        [_vm._v("Left")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h4", { staticClass: "form-section" }, [
-      _c("i", { staticClass: "la la-user" }),
       _vm._v(" بيانات الزبون")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", { attrs: { colspan: "3" } }, [_vm._v("Right")]),
-      _vm._v(" "),
-      _c("th", { attrs: { colspan: "3" } }, [_vm._v("Left")])
     ])
   },
   function() {
@@ -110706,6 +112285,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -110729,8 +112316,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
-    updateUser: function updateUser() {
+    getResults: function getResults() {
       var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/orders?page=' + page).then(function (response) {
+        _this.orders = response.data.orders;
+      });
+    },
+    getResultsex: function getResultsex() {
+      var _this2 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/expenses?page=' + page).then(function (response) {
+        _this2.expenses = response.data.expenses;
+      });
+    },
+    updateUser: function updateUser() {
+      var _this3 = this;
 
       this.$Progress.start();
       this.form.put('api/expenses/' + this.form.id).then(function () {
@@ -110738,10 +112343,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         $('#addnew').modal('hide');
         swal.fire('تعديل !', 'تم التعديل بنجاح ', 'success');
 
-        _this.$Progress.finish();
+        _this3.$Progress.finish();
         Fire.$emit('AfterCreate');
       }).catch(function () {
-        _this.$Progress.fail();
+        _this3.$Progress.fail();
       });
     },
     editModel: function editModel(user) {
@@ -110763,7 +112368,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.total = ord_amount - epx_amount;
     },
     deleteuser: function deleteuser(id) {
-      var _this2 = this;
+      var _this4 = this;
 
       // sweet alert 
       swal.fire({
@@ -110778,7 +112383,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
           // send Http Delete requst 
-          _this2.form.delete('api/expenses/' + id).then(function () {
+          _this4.form.delete('api/expenses/' + id).then(function () {
             swal.fire('حذف!', 'تم حذف هذا المنصرف.', 'success');
             // fire for Refreshing page
             Fire.$emit('AfterCreate');
@@ -110789,23 +112394,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadUsers: function loadUsers() {
-      var _this3 = this;
+      var _this5 = this;
 
       axios.get("api/expenses").then(function (_ref) {
         var data = _ref.data;
-        return _this3.expenses = data.expenses.data;
+        return _this5.expenses = data.expenses;
       });
       axios.get("api/expenses").then(function (_ref2) {
         var data = _ref2.data;
-        return _this3.expenses_total = data.expenses_total;
+        return _this5.expenses_total = data.expenses_total;
       });
       axios.get("api/orders").then(function (_ref3) {
         var data = _ref3.data;
-        return _this3.orders = data.orders.data;
+        return _this5.orders = data.orders;
       });
       axios.get("api/orders").then(function (_ref4) {
         var data = _ref4.data;
-        return _this3.orders_amount = data.orders_amount;
+        return _this5.orders_amount = data.orders_amount;
       });
     },
     createuser: function createuser() {
@@ -110825,13 +112430,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this6 = this;
 
     this.loadUsers();
     // this.suma(this.orders_amount,this.expenses_total);
     // Refrash page 
     Fire.$on('AfterCreate', function () {
-      _this4.loadUsers();
+      _this6.loadUsers();
     });
 
     // setInterval(() => this.loadUsers(),3000);
@@ -110899,7 +112504,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.orders, function(order) {
+                _vm._l(_vm.orders.data, function(order) {
                   return _c("tr", { key: order.id }, [
                     _c("td", [_vm._v(_vm._s(order.id))]),
                     _vm._v(" "),
@@ -110923,7 +112528,19 @@ var render = function() {
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.orders },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ]),
       _vm._v(" "),
@@ -110937,7 +112554,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.expenses, function(expense) {
+                _vm._l(_vm.expenses.data, function(expense) {
                   return _c("tr", { key: expense.id }, [
                     _c("td", [_vm._v(_vm._s(expense.id))]),
                     _vm._v(" "),
@@ -110955,7 +112572,19 @@ var render = function() {
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.expenses },
+                on: { "pagination-change-page": _vm.getResultsex }
+              })
+            ],
+            1
+          )
         ])
       ])
     ])
@@ -111267,11 +112896,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
+      search: '',
       prodect: {},
       prodect_total: '',
       form: new Form({
@@ -111288,8 +112929,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
-    updateUser: function updateUser() {
+    searchit: function searchit() {
+      Fire.$emit('searching');
+    },
+    getResults: function getResults() {
       var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+      axios.get('api/prodects?page=' + page).then(function (response) {
+        _this.prodect = response.data.prodect;
+      });
+    },
+    updateUser: function updateUser() {
+      var _this2 = this;
 
       this.$Progress.start();
       this.form.put('api/prodects/' + this.form.id).then(function () {
@@ -111297,10 +112950,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         $('#addnew').modal('hide');
         swal.fire('تعديل !', 'تم التعديل بنجاح ', 'success');
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
         Fire.$emit('AfterCreate');
       }).catch(function () {
-        _this.$Progress.fail();
+        _this2.$Progress.fail();
       });
     },
     editModel: function editModel(user) {
@@ -111315,12 +112968,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       $('#addnew').modal('show');
     },
     deleteuser: function deleteuser(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       // sweet alert 
       swal.fire({
         title: 'هل انت متأكد؟',
-        text: "هل انت متأكد من حذف هذا فريم!",
+        text: "(ملاحظة : سيتم مسح جميع الطلبات التي  تمت عن طريق هذا الفريم) هل انت متأكد من حذف هذا فريم!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -111330,7 +112983,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
           // send Http Delete requst 
-          _this2.form.delete('api/prodects/' + id).then(function () {
+          _this3.form.delete('api/prodects/' + id).then(function () {
             swal.fire('حذف!', 'تم حذف هذا فريم.', 'success');
             // fire for Refreshing page
             Fire.$emit('AfterCreate');
@@ -111341,18 +112994,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     loadUsers: function loadUsers() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("api/prodects").then(function (_ref) {
         var data = _ref.data;
-        return _this3.prodect = data.prodect.data;
+        return _this4.prodect = data.prodect;
       });
       axios.get("api/prodects").then(function (_ref2) {
         var data = _ref2.data;
-        return _this3.prodect_total = data.prodect_total;
+        return _this4.prodect_total = data.prodect_total;
       });
     },
     createuser: function createuser() {
+
       this.$Progress.start();
       // Http Post data to create new user 
       this.form.post('api/prodects').then(function () {
@@ -111369,12 +113023,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
+    Fire.$on('searching', function () {
+      var query = _this5.search;
+      axios.get('api/findprodects?q=' + query).then(function (data) {
+        _this5.prodect = data.data;
+      }).catch(function () {});
+    });
     this.loadUsers();
     // Refrash page 
     Fire.$on('AfterCreate', function () {
-      _this4.loadUsers();
+      _this5.loadUsers();
     });
 
     // setInterval(() => this.loadUsers(),3000);
@@ -111399,24 +113059,56 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-tools" }, [
-              _c(
-                "button",
-                { staticClass: "btn btn-success", on: { click: _vm.newModel } },
-                [
-                  _vm._v("اضافة فريم\n                  "),
-                  _c("i", { staticClass: "la la-plus" })
-                ]
-              )
+              _c("div", { staticClass: "btn pull-left" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: { click: _vm.newModel }
+                  },
+                  [
+                    _vm._v("اضافة فريم\n                    "),
+                    _c("i", { staticClass: "la la-plus" })
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "input-group" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "search", placeholder: "بحث (اسم الفريم )" },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                })
+              ])
             ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover" }, [
-              _vm._m(0),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.prodect, function(prodects) {
+                _vm._l(_vm.prodect.data, function(prodects) {
                   return _c("tr", { key: prodects.id }, [
                     _c("td", [_vm._v(_vm._s(prodects.id))]),
                     _vm._v(" "),
@@ -111444,7 +113136,7 @@ var render = function() {
                         [_c("i", { staticClass: "la la-edit" })]
                       ),
                       _vm._v(
-                        "\n                      /\n                      "
+                        "\n                        /\n                        "
                       ),
                       _c(
                         "a",
@@ -111464,7 +113156,19 @@ var render = function() {
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.prodect },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ]),
       _vm._v(" "),
@@ -111489,7 +113193,7 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm._m(1)
+              _vm._m(2)
             ])
           ])
         ])
@@ -111552,7 +113256,7 @@ var render = function() {
                   [_vm._v(" تعديل فريم")]
                 ),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(3)
               ]),
               _vm._v(" "),
               _c(
@@ -111581,7 +113285,8 @@ var render = function() {
                         attrs: {
                           type: "text",
                           name: "name",
-                          placeholder: "اسم فريم"
+                          placeholder: "اسم فريم",
+                          required: ""
                         },
                         domProps: { value: _vm.form.name },
                         on: {
@@ -111617,7 +113322,8 @@ var render = function() {
                         attrs: {
                           type: "text",
                           name: "company",
-                          placeholder: "اسم الشركه"
+                          placeholder: "اسم الشركه",
+                          required: ""
                         },
                         domProps: { value: _vm.form.company },
                         on: {
@@ -111686,7 +113392,7 @@ var render = function() {
                           }
                         ],
                         staticClass: "form-control",
-                        attrs: { type: "date", name: "date" },
+                        attrs: { type: "date", name: "date", required: "" },
                         domProps: { value: _vm.form.date },
                         on: {
                           input: function($event) {
@@ -111798,6 +113504,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "ficon ft-search" })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("ID")]),
@@ -111855,18 +113571,606 @@ if (false) {
 
 /***/ }),
 /* 227 */
+/***/ (function(module, exports) {
+
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "fb15");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "f6fd":
+/***/ (function(module, exports) {
+
+// document.currentScript polyfill by Adam Miller
+
+// MIT license
+
+(function(document){
+  var currentScript = "currentScript",
+      scripts = document.getElementsByTagName('script'); // Live NodeList collection
+
+  // If browser needs currentScript polyfill, add get currentScript() to the document object
+  if (!(currentScript in document)) {
+    Object.defineProperty(document, currentScript, {
+      get: function(){
+
+        // IE 6-10 supports script readyState
+        // IE 10+ support stack trace
+        try { throw new Error(); }
+        catch (err) {
+
+          // Find the second match for the "at" string to get file src url from stack.
+          // Specifically works with the format of stack traces in IE.
+          var i, res = ((/.*at [^\(]*\((.*):.+:.+\)$/ig).exec(err.stack) || [false])[1];
+
+          // For all scripts on the page, if src matches or if ready state is interactive, return the script tag
+          for(i in scripts){
+            if(scripts[i].src == res || scripts[i].readyState == "interactive"){
+              return scripts[i];
+            }
+          }
+
+          // If no match, return null
+          return null;
+        }
+      }
+    });
+  }
+})(document);
+
+
+/***/ }),
+
+/***/ "fb15":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
+// This file is imported into lib/wc client bundles.
+
+if (typeof window !== 'undefined') {
+  if (true) {
+    __webpack_require__("f6fd")
+  }
+
+  var i
+  if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
+    __webpack_require__.p = i[1] // eslint-disable-line
+  }
+}
+
+// Indicate to webpack that this file can be concatenated
+/* harmony default export */ var setPublicPath = (null);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"604a59b1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('renderless-laravel-vue-pagination',{attrs:{"data":_vm.data,"limit":_vm.limit,"show-disabled":_vm.showDisabled,"size":_vm.size,"align":_vm.align},on:{"pagination-change-page":_vm.onPaginationChangePage},scopedSlots:_vm._u([{key:"default",fn:function(ref){
+var data = ref.data;
+var limit = ref.limit;
+var showDisabled = ref.showDisabled;
+var size = ref.size;
+var align = ref.align;
+var computed = ref.computed;
+var prevButtonEvents = ref.prevButtonEvents;
+var nextButtonEvents = ref.nextButtonEvents;
+var pageButtonEvents = ref.pageButtonEvents;
+return (computed.total > computed.perPage)?_c('ul',{staticClass:"pagination",class:{
+            'pagination-sm': size == 'small',
+            'pagination-lg': size == 'large',
+            'justify-content-center': align == 'center',
+            'justify-content-end': align == 'right'
+        }},[(computed.prevPageUrl || showDisabled)?_c('li',{staticClass:"page-item pagination-prev-nav",class:{'disabled': !computed.prevPageUrl}},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#","aria-label":"Previous","tabindex":!computed.prevPageUrl && -1}},prevButtonEvents),[_vm._t("prev-nav",[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("«")]),_c('span',{staticClass:"sr-only"},[_vm._v("Previous")])])],2)]):_vm._e(),_vm._l((computed.pageRange),function(page,key){return _c('li',{key:key,staticClass:"page-item pagination-page-nav",class:{ 'active': page == computed.currentPage }},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#"}},pageButtonEvents(page)),[_vm._v("\n                "+_vm._s(page)+"\n                "),(page == computed.currentPage)?_c('span',{staticClass:"sr-only"},[_vm._v("(current)")]):_vm._e()])])}),(computed.nextPageUrl || showDisabled)?_c('li',{staticClass:"page-item pagination-next-nav",class:{'disabled': !computed.nextPageUrl}},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#","aria-label":"Next","tabindex":!computed.nextPageUrl && -1}},nextButtonEvents),[_vm._t("next-nav",[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("»")]),_c('span',{staticClass:"sr-only"},[_vm._v("Next")])])],2)]):_vm._e()],2):_vm._e()}}],null,true)})}
+var staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/RenderlessLaravelVuePagination.vue?vue&type=script&lang=js&
+/* harmony default export */ var RenderlessLaravelVuePaginationvue_type_script_lang_js_ = ({
+  props: {
+    data: {
+      type: Object,
+      default: function _default() {}
+    },
+    limit: {
+      type: Number,
+      default: 0
+    },
+    showDisabled: {
+      type: Boolean,
+      default: false
+    },
+    size: {
+      type: String,
+      default: 'default',
+      validator: function validator(value) {
+        return ['small', 'default', 'large'].indexOf(value) !== -1;
+      }
+    },
+    align: {
+      type: String,
+      default: 'left',
+      validator: function validator(value) {
+        return ['left', 'center', 'right'].indexOf(value) !== -1;
+      }
+    }
+  },
+  computed: {
+    isApiResource: function isApiResource() {
+      return !!this.data.meta;
+    },
+    currentPage: function currentPage() {
+      return this.isApiResource ? this.data.meta.current_page : this.data.current_page;
+    },
+    firstPageUrl: function firstPageUrl() {
+      return this.isApiResource ? this.data.links.first : null;
+    },
+    from: function from() {
+      return this.isApiResource ? this.data.meta.from : this.data.from;
+    },
+    lastPage: function lastPage() {
+      return this.isApiResource ? this.data.meta.last_page : this.data.last_page;
+    },
+    lastPageUrl: function lastPageUrl() {
+      return this.isApiResource ? this.data.links.last : null;
+    },
+    nextPageUrl: function nextPageUrl() {
+      return this.isApiResource ? this.data.links.next : this.data.next_page_url;
+    },
+    perPage: function perPage() {
+      return this.isApiResource ? this.data.meta.per_page : this.data.per_page;
+    },
+    prevPageUrl: function prevPageUrl() {
+      return this.isApiResource ? this.data.links.prev : this.data.prev_page_url;
+    },
+    to: function to() {
+      return this.isApiResource ? this.data.meta.to : this.data.to;
+    },
+    total: function total() {
+      return this.isApiResource ? this.data.meta.total : this.data.total;
+    },
+    pageRange: function pageRange() {
+      if (this.limit === -1) {
+        return 0;
+      }
+
+      if (this.limit === 0) {
+        return this.lastPage;
+      }
+
+      var current = this.currentPage;
+      var last = this.lastPage;
+      var delta = this.limit;
+      var left = current - delta;
+      var right = current + delta + 1;
+      var range = [];
+      var pages = [];
+      var l;
+
+      for (var i = 1; i <= last; i++) {
+        if (i === 1 || i === last || i >= left && i < right) {
+          range.push(i);
+        }
+      }
+
+      range.forEach(function (i) {
+        if (l) {
+          if (i - l === 2) {
+            pages.push(l + 1);
+          } else if (i - l !== 1) {
+            pages.push('...');
+          }
+        }
+
+        pages.push(i);
+        l = i;
+      });
+      return pages;
+    }
+  },
+  methods: {
+    previousPage: function previousPage() {
+      this.selectPage(this.currentPage - 1);
+    },
+    nextPage: function nextPage() {
+      this.selectPage(this.currentPage + 1);
+    },
+    selectPage: function selectPage(page) {
+      if (page === '...') {
+        return;
+      }
+
+      this.$emit('pagination-change-page', page);
+    }
+  },
+  render: function render() {
+    var _this = this;
+
+    return this.$scopedSlots.default({
+      data: this.data,
+      limit: this.limit,
+      showDisabled: this.showDisabled,
+      size: this.size,
+      align: this.align,
+      computed: {
+        isApiResource: this.isApiResource,
+        currentPage: this.currentPage,
+        firstPageUrl: this.firstPageUrl,
+        from: this.from,
+        lastPage: this.lastPage,
+        lastPageUrl: this.lastPageUrl,
+        nextPageUrl: this.nextPageUrl,
+        perPage: this.perPage,
+        prevPageUrl: this.prevPageUrl,
+        to: this.to,
+        total: this.total,
+        pageRange: this.pageRange
+      },
+      prevButtonEvents: {
+        click: function click(e) {
+          e.preventDefault();
+
+          _this.previousPage();
+        }
+      },
+      nextButtonEvents: {
+        click: function click(e) {
+          e.preventDefault();
+
+          _this.nextPage();
+        }
+      },
+      pageButtonEvents: function pageButtonEvents(page) {
+        return {
+          click: function click(e) {
+            e.preventDefault();
+
+            _this.selectPage(page);
+          }
+        };
+      }
+    });
+  }
+});
+// CONCATENATED MODULE: ./src/RenderlessLaravelVuePagination.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_RenderlessLaravelVuePaginationvue_type_script_lang_js_ = (RenderlessLaravelVuePaginationvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode /* vue-cli only */
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+// CONCATENATED MODULE: ./src/RenderlessLaravelVuePagination.vue
+var RenderlessLaravelVuePagination_render, RenderlessLaravelVuePagination_staticRenderFns
+
+
+
+
+/* normalize component */
+
+var component = normalizeComponent(
+  src_RenderlessLaravelVuePaginationvue_type_script_lang_js_,
+  RenderlessLaravelVuePagination_render,
+  RenderlessLaravelVuePagination_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var RenderlessLaravelVuePagination = (component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ var LaravelVuePaginationvue_type_script_lang_js_ = ({
+  props: {
+    data: {
+      type: Object,
+      default: function _default() {}
+    },
+    limit: {
+      type: Number,
+      default: 0
+    },
+    showDisabled: {
+      type: Boolean,
+      default: false
+    },
+    size: {
+      type: String,
+      default: 'default',
+      validator: function validator(value) {
+        return ['small', 'default', 'large'].indexOf(value) !== -1;
+      }
+    },
+    align: {
+      type: String,
+      default: 'left',
+      validator: function validator(value) {
+        return ['left', 'center', 'right'].indexOf(value) !== -1;
+      }
+    }
+  },
+  methods: {
+    onPaginationChangePage: function onPaginationChangePage(page) {
+      this.$emit('pagination-change-page', page);
+    }
+  },
+  components: {
+    RenderlessLaravelVuePagination: RenderlessLaravelVuePagination
+  }
+});
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_LaravelVuePaginationvue_type_script_lang_js_ = (LaravelVuePaginationvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue
+
+
+
+
+
+/* normalize component */
+
+var LaravelVuePagination_component = normalizeComponent(
+  src_LaravelVuePaginationvue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var LaravelVuePagination = (LaravelVuePagination_component.exports);
+// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
+
+
+/* harmony default export */ var entry_lib = __webpack_exports__["default"] = (LaravelVuePagination);
+
+
+
+/***/ })
+
+/******/ })["default"];
+//# sourceMappingURL=laravel-vue-pagination.common.js.map
+
+/***/ }),
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(228)
+  __webpack_require__(229)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(231)
+var __vue_script__ = __webpack_require__(232)
 /* template */
-var __vue_template__ = __webpack_require__(232)
+var __vue_template__ = __webpack_require__(233)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -111905,13 +114209,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(229);
+var content = __webpack_require__(230);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -111931,7 +114235,7 @@ if(false) {
 }
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -111945,7 +114249,7 @@ exports.push([module.i, "\n.action-link[data-v-5d1d7d82] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports) {
 
 /**
@@ -111978,7 +114282,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -112346,7 +114650,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -112920,19 +115224,19 @@ if (false) {
 }
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(234)
+  __webpack_require__(235)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(236)
+var __vue_script__ = __webpack_require__(237)
 /* template */
-var __vue_template__ = __webpack_require__(237)
+var __vue_template__ = __webpack_require__(238)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -112971,13 +115275,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(235);
+var content = __webpack_require__(236);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -112997,7 +115301,7 @@ if(false) {
 }
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -113011,7 +115315,7 @@ exports.push([module.i, "\n.action-link[data-v-2ee9fe67] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -113135,7 +115439,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -113245,19 +115549,19 @@ if (false) {
 }
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(239)
+  __webpack_require__(240)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(241)
+var __vue_script__ = __webpack_require__(242)
 /* template */
-var __vue_template__ = __webpack_require__(242)
+var __vue_template__ = __webpack_require__(243)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -113296,13 +115600,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(240);
+var content = __webpack_require__(241);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -113322,7 +115626,7 @@ if(false) {
 }
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -113336,7 +115640,7 @@ exports.push([module.i, "\n.action-link[data-v-89c53f18] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -113662,7 +115966,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -114037,7 +116341,7 @@ if (false) {
 }
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

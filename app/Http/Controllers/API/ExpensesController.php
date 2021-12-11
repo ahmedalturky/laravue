@@ -15,7 +15,7 @@ class ExpensesController extends Controller
      */
     public function index()
     {
-        $expenses= Expenses::latest()->paginate(10);
+        $expenses= Expenses::latest()->paginate(5);
         $expenses_total= Expenses::latest()->sum('amount');
         return response()->json(['expenses'=>$expenses,'expenses_total'=>$expenses_total]);
     }
@@ -36,6 +36,19 @@ class ExpensesController extends Controller
        
         ]);
     }
+
+    public function search()
+    {
+        if ($search= \Request::get('q')){
+            $expenses=Expenses::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%")->
+                orwhere('amount','LIKE',"%$search%");
+            })->paginate(5);
+        }else{
+            $expenses= Expenses::latest()->paginate(5);
+        }
+
+        return $expenses;    }
 
     /**
      * Display the specified resource.
@@ -88,6 +101,11 @@ class ExpensesController extends Controller
     public function report_money($amountone,$amountwo)
     {
          $users=Expenses::whereBetween('amount',[$amountone,$amountwo])->get();
+         return response()->json(['databack'=>$users]);
+    }
+    public function report_ex()
+    {
+         $users=Expenses::all();
          return response()->json(['databack'=>$users]);
     }
 }

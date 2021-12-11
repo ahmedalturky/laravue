@@ -69,7 +69,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr  v-for="order in orders" :key="order.id">
+                    <tr  v-for="order in orders.data" :key="order.id">
                       <td>{{order.id}}</td>
                       <td>{{order.clint_name}}</td>
                       <td>{{order.clint_address}}</td>
@@ -95,6 +95,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+              <div class="card-footer">
+                <pagination :data="orders" @pagination-change-page="getResults"></pagination>
+
+              </div>
             </div></div>
             <!-- /.card -->
        
@@ -123,7 +127,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="expense in expenses" :key="expense.id">
+                    <tr v-for="expense in expenses.data" :key="expense.id">
                       <td>{{expense.id}}</td>
                       <td>{{expense.name}}</td>
                       <td>{{formatPrice(expense.amount)}} SDG</td>
@@ -146,6 +150,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+               <div class="card-footer">
+                <pagination :data="expenses" @pagination-change-page="getResultsex"></pagination>
+
+              </div>
             </div>
             <!-- /.card -->
             
@@ -196,6 +204,19 @@
       methods:
 
       {
+          getResults(page = 1) {
+			axios.get('api/orders?page=' + page)
+				.then(response => {
+					this.orders = response.data.orders;
+				});
+		},
+        getResultsex(page = 1) {
+			axios.get('api/expenses?page=' + page)
+				.then(response => {
+					this.expenses = response.data.expenses;
+				});
+		},
+        
         updateUser(){
           this.$Progress.start();
             this.form.put('api/expenses/'+this.form.id)
@@ -275,9 +296,9 @@ this.total=ord_amount-epx_amount;
         },
         loadUsers(){
 
-        axios.get("api/expenses").then(({ data }) => (this.expenses = data.expenses.data));
+        axios.get("api/expenses").then(({ data }) => (this.expenses = data.expenses));
         axios.get("api/expenses").then(({ data }) => (this.expenses_total = data.expenses_total));
-        axios.get("api/orders").then(({ data }) => (this.orders = data.orders.data));
+        axios.get("api/orders").then(({ data }) => (this.orders = data.orders));
         axios.get("api/orders").then(({ data }) => (this.orders_amount = data.orders_amount));
         },
        

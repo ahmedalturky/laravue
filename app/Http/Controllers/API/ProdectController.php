@@ -16,7 +16,7 @@ class ProdectController extends Controller
      */
     public function index()
     {
-        $prodect= Prodect::latest()->paginate(10);
+        $prodect= Prodect::latest()->paginate(5);
         $prodect_total= Prodect::latest()->count();
         return response()->json(['prodect'=>$prodect,'prodect_total'=>$prodect_total]);
     }
@@ -62,6 +62,17 @@ class ProdectController extends Controller
         $prodect->update($request->all());
 
         return ['message' => 'update date'];    }
+    public function search()
+        {
+            if ($search= \Request::get('q')){
+                $prodect=Prodect::where(function($query) use ($search){
+                    $query->where('name','LIKE',"%$search%");
+                })->paginate(5);
+            }else{
+                $prodect= Prodect::latest()->paginate(5);
+            }
+
+            return $prodect;    }
 
     /**
      * Remove the specified resource from storage.
@@ -83,4 +94,9 @@ class ProdectController extends Controller
              $users=Prodect::whereBetween('date',[$d.' 00:00:00',$d2.' 23:59:59'])->get();
              return response()->json(['databack'=>$users]);
         }
+        public function report_pro()
+    {
+        $prodects= Prodect::get();
+         return response()->json(['databack'=>$prodects]);
+    }
 }

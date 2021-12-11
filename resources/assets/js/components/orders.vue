@@ -8,11 +8,14 @@
                     <div class="card-header">
                      <h3 class="card-title text-center">جدول المبيعات</h3>
 
-                        <!-- <div class="card-tools">
-                         <button class="btn btn-success" @click="newModel">اضافة منصرف
-                    <i class="la la-plus"></i>
-                  </button>
-                </div> -->
+                       <div class="card-tools">
+                  <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" ><i class="ficon ft-search"></i></span>
+  </div>
+  <input type="search" @keyup="searchit" v-model="search" class="form-control" placeholder="بحث (اسم او رقم الهاتف )">
+</div>
+                </div> 
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -31,7 +34,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="order in orders" :key="order.id">
+                    <tr v-for="order in orders.data" :key="order.id">
                       <td>{{order.id}}</td>
                       <td>{{order.clint_name}}</td>
                       <td>{{order.clint_address}}</td>
@@ -62,6 +65,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+              <div class="card-footer">
+                <pagination :data="orders" @pagination-change-page="getResults"></pagination>
+
+              </div>
             </div>
             <!-- /.card -->
             
@@ -116,9 +123,12 @@
                 <div class="form-body">
                 <img  style="border-radius: 50%;width:90px;height: 90px;float:right;" alt="modern admin logo" src="img/logo-o.jpeg" >
                                <img  style="border-radius: 50%;width:90px;height: 90px;float:left;" alt="modern admin logo" src="img/logo-o.jpeg" >
-                 <center><h3 class="brand-text">أوبتيزون للبصريات</h3> <br>
+                 <center><h3 class="brand-text">مركز أوبتيزون للبصريات</h3> 
                  <h3 class="brand-text">Optizone Optics</h3>
-                 </center><br>                        <h4 class="form-section"><i class="la la-user"></i>  استلام الزبون</h4>
+                                    
+                  <h4 class="form-section"><i class="la la-home"></i>  الخرطوم-الطائف-شارع الستين-جوار كليةالرياض العالمية</h4>
+                      <h4 >0992989975-0121258927 :Tel<i class="la la-phone"></i>  </h4> </center> 
+                   <!-- <h4 class="form-section"><i class="la la-user"></i>  استلام الزبون</h4> -->
 
                         <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;">
                            <tbody> <tr class="text-center" >
@@ -135,14 +145,15 @@
                             <td style="text-align:right; border: 1px groove black;"><b>نوع الفريم   <b> :</b>  {{  this.form.prodect.name  }} </b> </td>
                           </tr>
                            <tr class="text-center" >
+                             <td style="text-align:right; border: 1px groove black;"><b>نوع العدسات   <b> :</b>  {{  this.form.type  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b> المبلغ الكلي  <b> :</b>  {{  formatPrice(this.form.prise)  }} </b> </td>
-                            <td style="text-align:right; border: 1px groove black;"><b>التخفيض (%)   <b> :</b>  {{  this.form.discount  }} </b> </td>
                           </tr>
                            <tr class="text-center" >
+                           <td style="text-align:right; border: 1px groove black;"><b>التخفيض (%)   <b> :</b>  {{  this.form.discount  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b>المبلغ بعد التخفيض   <b> :</b>  {{  formatPrice(this.form.amount_after)  }} </b> </td>
-                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  formatPrice(this.form.payed)  }} </b> </td>
                           </tr>
                           <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>المدفوع   <b> :</b>  {{  formatPrice(this.form.payed)  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b> المتبقي    <b> :</b>  {{  formatPrice(this.form.amount_left)  }} </b> </td>
                           </tr>
                             <tr class="text-center" >
@@ -151,20 +162,23 @@
                    
                             </tbody>
                         </table><br>
-                       <div style="text-align: right;">
+                             <div style="text-align: right;"><br>
                             <b>-المحل غير مسؤول عن اي منتج لم يتم استلامه خلال 60 يوم من تاريخ الاستلام .
--المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .
--لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .<br>
--يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال .<br>
--العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.<br>
--عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .</b> 
-                       </div><br>
+<br>-المبالغ المدفوعة على المنتجات لا يتم استرجاعها بعد التنفيذ بالنسبه للعدسات .
+<br>-لا يتم تسليم المنتج إلا بعد دفع قيمته كامله .
+<br>-يتم استلام اي شكوى بخصوص المنتج من مده أقصاها اسبوعين من تاريخ الاستلام ولا يتحمل المركز الشكاوي الناتجة عن الإهمال وسوء الاستعمال .<br>
+<br>-العدسات اللاصقة لا ترد ولا تستبدل بعد خروجها من المركز.
+<br>-عذرا المركز غير مسؤول في حالة حدوث تلف للفريمات من خارج المركز أثناء تركيب العدسات .
+                            </b></div>
                        <h3>_______________________________________________________________________________</h3>
          <img  style="border-radius: 50%;width:90px;height: 90px;float:right;" alt="modern admin logo" src="img/logo-o.jpeg" >
                                <img  style="border-radius: 50%;width:90px;height: 90px;float:left;" alt="modern admin logo" src="img/logo-o.jpeg" >
-                 <center><h3 class="brand-text">أوبتيزون للبصريات</h3> <br>
+                 <center><h3 class="brand-text">مركز أوبتيزون للبصريات</h3> 
                  <h3 class="brand-text">Optizone Optics</h3>
-                 </center><br>                        <h4 class="form-section"><i class="la la-user"></i>  تسليم المركز</h4>
+                 </center>               
+                      <!-- <h4 class="form-section"><i class="la la-home"></i>  الخرطوم ,الطائف, شارع الستين</h4>
+                      <h4 style="float:left;">0992989975-0121258927 :Tel<i class="la la-phone"></i>  </h4><br>  -->
+                 <!-- <h4 class="form-section"><i class="la la-user"></i>   بيانات المركز</h4> -->
 
                         <table style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;">
                            <tbody> <tr class="text-center" >
@@ -180,48 +194,68 @@
                             <td style="text-align:right; border: 1px groove black;"><b> مكان الكشف  <b> :</b>  {{  this.plase_form  }} </b> </td>
                             <td style="text-align:right; border: 1px groove black;"><b>نوع الفريم   <b> :</b>  {{  this.form.prodect.name  }} </b> </td>
                           </tr>
+                          <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>  نوع العدسات  <b> :</b>  {{  this.form.type  }} </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b>ملاحظة    <b> :</b>  {{  this.form.note  }} </b> </td>
+                         
+                          </tr>
+                           </tbody>
+                        </table><br>
+                        <table>
+                          <tbody>
+                          <tr class="text-center" >
+                            <td style="text-align:right; border: 1px groove black;"><b>  Progressive      <input v-model="form.progressive" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"  > </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> Bifocal    <input v-model="form.bifocal" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"  > </b> </td>
+                            <td style="text-align:right; border: 1px groove black;"><b> SV     <input v-model="form.sv" type="checkbox" disabled="false" id="userinput4" class="state icheckbox_minimal checked mr-1"> </b> </td>
+                         
+                          </tr>
                            </tbody>
                         </table><br>
 
                                 <table v-show="!butifele" style=" border: 1px solid black;  border-collapse: collapse; width: 90%;  height: 50px;padding: 15px;line-height:normal;color:black;" dir="ltr">
                                     <thead>
-                               <tr>
-                                      <th style="text-align:center; border: 1px solid black;" colspan="4">Right</th>
-                                      <th style="text-align:center; border: 1px solid black;" colspan="4">Left</th>
-                    </tr>
+                         
                     
                                          <tr>
                                      <th style="text-align:center; border: 1px solid black;">#</th>
                                       <th style="text-align:center; border: 1px solid black;"><center>SPH</center></th>
                                      <th style="text-align:center; border: 1px solid black;"> <center>SYL</center></th>
                                      <th style="text-align:center; border: 1px solid black;"><center>AXIS</center></th>
-                                     <th style="text-align:center; border: 1px solid black;"><center>SPH</center></th>
-                                     <th style="text-align:center; border: 1px solid black;"><center>SYL</center></th>
-                                    <th style="text-align:center; border: 1px solid black;"><center>AXIS</center></th>
+                                     <th style="text-align:center; border: 1px solid black;"><center>ADD1</center></th>
+                                     <th style="text-align:center; border: 1px solid black;"><center>ADD2</center></th>
+                                    <th style="text-align:center; border: 1px solid black;"><center>VA</center></th>
+                                    <th style="text-align:center; border: 1px solid black;"><center>C.lenses</center></th>
                     </tr>
                   </thead>
                   <tbody> 
                     <tr >
-                      <td> Dist</td>
+                      <td> Right</td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SPH  }} </center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_R_AXIS  }}</center></td>
                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_SPH  }} </center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_SYL  }}</center> </td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_AXIS  }} </center></td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.D_L_ah1  }} </center></td>
                     </tr>
                       <tr>
-                      <td> Near</td>
+                      <td> Left</td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_SPH  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_R_AXIS  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_SPH  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_SYL  }}</center></td>
                       <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_AXIS  }} </center></td>
+                      <td style="text-align:right; border: 1px groove black;"><center>{{  this.form.N_L_ah2  }} </center></td>
                     </tr>
+                    </tbody>
+                </table>
+                <br>
+                <table  dir="ltr">
+                <tbody>
                       <tr>
-                    <td style="text-align:center; border: 1px solid black;" colspan="0">IPD</td>
-                    <td style="text-align:center; border: 1px solid black;" colspan="1">{{  this.form.IPD  }}</td>
+                    <td style="text-align:left; border: 1px solid black;" colspan="0"><b>IPD <b> :</b>{{  this.form.IPD  }}</b></td>
+                    <!-- <td style="text-align:center; border: 1px solid black;" colspan="1">{{  this.form.IPD  }}</td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -284,51 +318,53 @@
                               <div v-show="!editmode" class="card-body table-responsive p-0">
                                 <table  class="table table-hover" dir="ltr">
                                     <thead>
-                               <tr>
-                                      <th colspan="3">Right</th>
-                                      <th colspan="3">Left</th>
-                    </tr>
+                       
                     
                                          <tr>
                                      <th>#</th>
                                       <th ><center>SPH</center></th>
                                      <th> <center>SYL</center></th>
                                      <th><center>AXIS</center></th>
-                                     <th><center>SPH</center></th>
-                                     <th><center>SYL</center></th>
-                                    <th><center>AXIS</center></th>
+                                  <th><center>ADD1</center></th>
+                                     <th><center>ADD2</center></th>
+                                    <th><center>VA</center></th>
+                                    <th><center>C.lenses</center></th>
                     </tr>
                   </thead>
                   <tbody> 
                     <tr >
-                      <td> Dist</td>
-                      <td><center><input v-model="form.D_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td> Right</td>
+                      <td><center><input v-model="form.D_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="D_R_SPH"> </center></td>
-                      <td ><center><input v-model="form.D_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td ><center><input v-model="form.D_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="D_R_SYL"></center></td>
-                      <td><center><input v-model="form.D_R_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.D_R_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="D_R_AXIS"></center></td>
-                     <td><center><input v-model="form.D_L_SPH" type="number" id="userinput3" class="form-control border-primary"  style="width:80px;" placeholder=" "
+                     <td><center><input v-model="form.D_L_SPH" type="number" id="userinput3" class="form-control border-primary"  style="width:80px;" step="0.01" placeholder=" "
                          name="D_L_SPH"> </center></td>
-                      <td><center><input v-model="form.D_L_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.D_L_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="D_L_SYL"></center> </td>
-                      <td><center><input v-model="form.D_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.D_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="D_L_AXIS"> </center></td>
+                          <td><center><input v-model="form.D_L_ah1" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
+                         name="D_L_ah1"> </center></td>
                     </tr>
                       <tr>
-                      <td> Near</td>
-                      <td><center><input v-model="form.N_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td> Left</td>
+                      <td><center><input v-model="form.N_R_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_R_SPH"></center></td>
-                      <td><center><input v-model="form.N_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.N_R_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_R_SYL"></center></td>
-                      <td><center><input v-model="form.N_R_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.N_R_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_R_AXIS"></center></td>
-                      <td><center><input v-model="form.N_L_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.N_L_SPH" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_L_SPH"> </center></td>
-                      <td><center><input v-model="form.N_L_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.N_L_SYL" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_L_SYL"> </center></td>
-                      <td><center><input v-model="form.N_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" placeholder=" "
+                      <td><center><input v-model="form.N_L_AXIS" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01" placeholder=" "
                          name="N_L_AXIS"> </center></td>
+                            <td><center><input v-model="form.N_L_ah2" type="number" id="userinput3" class="form-control border-primary" style="width:80px;" step="0.01"
+                         name="N_L_ah2"> </center></td>
                     </tr>
                     
                 
@@ -337,11 +373,47 @@
                       
               </div>
               <div class="row">
+                 <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">Progressive</label>
+                              <div class="col-md-5">
+                                <input  v-model="form.progressive" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" checked
+                                name="progressive" >
+                                
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">Bifocal</label>
+                              <div class="col-md-5">
+                                <input v-model="form.bifocal" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" placeholder=""
+                                name="bifocal" >
+                              </div>
+                            </div>
+                          </div>
+                            <div class="col-md-4">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput4">S.V</label>
+                              <div class="col-md-5">
+                                <input v-model="form.sv" type="checkbox" id="userinput4" class="state icheckbox_minimal checked mr-1" 
+                                name="sv" >
+                              </div>
+                            </div>
+                          </div>
+
                          <div v-show="!editmode" class="col-md-4">
                             <div class="form-group row">
                               <label  class="col-md-3 label-control" for="userinput5"> IPD</label>
                               <div class="col-md-5">
-                                <input  v-model="form.IPD" class="form-control border-primary" type="number" placeholder="  " id="userinput5" name="IPD">
+                                <input  v-model="form.IPD" class="form-control border-primary" type="number" step="0.01" placeholder="  " id="userinput5" name="IPD">
+                              </div>
+                            </div></div>
+                                 <div class="col-md-5">
+                            <div class="form-group row">
+                              <label class="col-md-3 label-control" for="userinput5"> نوع العدسات</label>
+                              <div class="col-md-5">
+                                <input v-model="form.type" class="form-control border-primary" type="text" placeholder="  " id="userinput5" name="type" step="0.01" >
                               </div>
                             </div></div>
                            <div class="col-md-4">
@@ -444,6 +516,7 @@
               editmode: false,
               reportdata: false,
               butifele: false,
+              search:'',
              products :[],
               orders :{},
               orders_amount:'',
@@ -463,6 +536,7 @@
                   D_L_SPH:'',
                   D_L_SYL:'',
                   D_L_AXIS:'',
+                  N_L_ah2:'',
 
                   N_R_SPH:'',
                   N_R_SYL:'',
@@ -470,10 +544,16 @@
                   N_L_SPH:'',
                   N_L_SYL:'',
                   N_L_AXIS:'',
+                  D_L_ah1:'',
+
+                  progressive:this.attributes,
+                  bifocal:this.attributes,
+                  sv:this.attributes,
 
                   IPD:'',
                   plase:'',
                   note:'',
+                  type:'',
 
                   prise:'',
                   discount:'',
@@ -490,7 +570,18 @@
 
       methods:
 
-      { printData(){
+      {
+         searchit(){
+          Fire.$emit('searching');
+        },
+        getResults(page = 1) {
+			axios.get('api/orders?page=' + page)
+				.then(response => {
+					this.orders = response.data.orders;
+				});
+		},
+        
+        printData(){
                  var divToPrint = document.getElementById("Report");
   var newWin=window.open();
   newWin.document.open();
@@ -618,7 +709,7 @@ this.reportdata=false;
         },
         loadorders(){
 
-        axios.get("api/orders").then(({ data }) => (this.orders = data.orders.data));
+        axios.get("api/orders").then(({ data }) => (this.orders = data.orders));
         axios.get("api/orders").then(({ data }) => (this.orders_amount = data.orders_amount));
         axios.get("api/orders").then(({ data }) => (this.products = data.prodects.data));
 
@@ -652,6 +743,16 @@ this.reportdata=false;
          
       },
         created() {
+                  Fire.$on('searching',()=>{
+            let query=this.search;
+            axios.get('api/findorder?q='+query)
+            .then((data)=>{
+              this.orders=data.data
+            })
+            .catch(()=>{
+
+            })
+          })
             this.loadorders();
             // Refrash page 
              Fire.$on('AfterCreate',() => {

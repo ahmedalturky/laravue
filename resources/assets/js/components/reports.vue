@@ -121,6 +121,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+                  <!-- <div class="card-footer">
+                <pagination :data="datacame" @pagination-change-page="getResults"></pagination>
+
+              </div> -->
             </div></div>
              
               <!-- /.card-header -->
@@ -202,7 +206,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-             <tr v-for="(datacams,index) in this.datacae" :key="datacams.id">
+             <tr v-for="(datacams,index) in this.datacae.data" :key="datacams.id">
 
                                <td style="text-align:center; border: 1px groove black;"> {{index+=1}}</td>
                                <td style="text-align:center; border: 1px groove black;"> {{datacams.name }}</td>
@@ -268,6 +272,12 @@
       methods:
 
       {
+          getResults(page = 1) {
+			axios.get('api/expenses?page=' + page)
+				.then(response => {
+					this.datacame = response.data.expenses;
+				});
+		},
         updateUser(){
           this.$Progress.start();
             this.form.put('api/user/'+this.form.id)
@@ -344,7 +354,7 @@ axios.get(`api/report_expense/${this.dateone}/${this.datetwo}`).then(({ data }) 
 
 
 }else if(this.reporttype==3){
-        axios.get("api/expenses").then(({ data }) => (this.datacame = data.expenses.data));
+        axios.get("api/report_ex").then(({ data }) => (this.datacame = data.databack));
 this.table=true;
 }else{
   this.table=false;

@@ -9,9 +9,19 @@
                      <h3 class="card-title text-center">جدول المنصرفات</h3>
 
                         <div class="card-tools">
+                                                    <div class="btn pull-left">
+
                          <button class="btn btn-success" @click="newModel">اضافة منصرف
                     <i class="la la-plus"></i>
                   </button>
+                </div>
+
+                            <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" ><i class="ficon ft-search"></i></span>
+  </div>
+  <input type="search" @keyup="searchit" v-model="search" class="form-control" placeholder="بحث (اسم المنصرف او المبلغ )">
+</div>
                 </div>
               </div>
               <!-- /.card-header -->
@@ -28,7 +38,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="expense in expenses" :key="expense.id">
+                    <tr v-for="expense in expenses.data" :key="expense.id">
                       <td>{{expense.id}}</td>
                       <td>{{expense.name}}</td>
                       <td>{{formatPrice(expense.amount)}}</td>
@@ -51,6 +61,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+                  <div class="card-footer">
+                <pagination :data="expenses" @pagination-change-page="getResults"></pagination>
+
+              </div>
             </div>
             <!-- /.card -->
             
@@ -104,15 +118,15 @@
               <div class="modal-body">
                 <!-- user name -->
                 <div class="form-group">
-                 <input v-model="form.name" type="text" name="name" class="form-control" placeholder="اسم المنصرف">
+                 <input v-model="form.name" type="text" name="name" class="form-control" placeholder="اسم المنصرف" required>
                  <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" /></div>
                   <!-- user email -->
                   <div class="form-group">
-                   <input v-model="form.amount" type="number" name="amount" class="form-control" placeholder="المبلغ">
+                   <input v-model="form.amount" type="number" name="amount" class="form-control" placeholder="المبلغ" required>
                  <div v-if="form.errors.has('amount')" v-html="form.errors.get('amount')" /></div>
               <!-- cg -->
                 <div class="form-group">
-                   <input v-model="form.date" type="date" name="date" class="form-control" placeholder="تفاصيل ">
+                   <input v-model="form.date" type="date" name="date" class="form-control" required>
                  <div v-if="form.errors.has('date')" v-html="form.errors.get('date')" /></div>
               <!-- bio -->
                 <div class="form-group">
@@ -142,6 +156,7 @@
             return{
               
               editmode: false,
+              search:'',
               expenses :{},
               expenses_total:'',
               form:new Form(
@@ -157,9 +172,17 @@
             }
       },
 
-      methods:
+      methods:{
 
-      {
+         searchit(){
+          Fire.$emit('searching');
+        },
+      getResults(page = 1) {
+			axios.get('api/expenses?page=' + page)
+				.then(response => {
+					this.expenses = response.data.expenses;
+				});
+		},
         updateUser(){
           this.$Progress.start();
             this.form.put('api/expenses/'+this.form.id)
@@ -235,7 +258,7 @@
         },
         loadUsers(){
 
-        axios.get("api/expenses").then(({ data }) => (this.expenses = data.expenses.data));
+        axios.get("api/expenses").then(({ data }) => (this.expenses = data.expenses));
         axios.get("api/expenses").then(({ data }) => (this.expenses_total = data.expenses_total));
         },
 
@@ -266,6 +289,16 @@
          
       },
         created() {
+          Fire.$on('searching',()=>{
+            let query=this.search;
+            axios.get('api/findexpenses?q='+query)
+            .then((data)=>{
+              this.expenses=data.data
+            })
+            .catch(()=>{
+
+            })
+          })
             this.loadUsers();
             // Refrash page 
              Fire.$on('AfterCreate',() => {

@@ -9,10 +9,17 @@
                      <h3 class="card-title text-center">جدول فريمات </h3>
 
                         <div class="card-tools">
+                          <div class="btn pull-left">
                          <button class="btn btn-success" @click="newModel">اضافة فريم
                     <i class="la la-plus"></i>
-                  </button>
-                </div>
+                  </button></div>
+                  <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" ><i class="ficon ft-search"></i></span>
+  </div>
+  <input type="search" @keyup="searchit" v-model="search" class="form-control" placeholder="بحث (اسم الفريم )">
+</div>
+              </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -29,7 +36,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="prodects in prodect" :key="prodects.id">
+                    <tr v-for="prodects in prodect.data" :key="prodects.id">
                       <td>{{prodects.id}}</td>
                       <td>{{prodects.name}}</td>
                       <td>{{prodects.company}}</td>
@@ -53,6 +60,10 @@
                 </table>
               </div>
               <!-- /.card-body -->
+               <div class="card-footer">
+                <pagination :data="prodect" @pagination-change-page="getResults"></pagination>
+
+              </div>
             </div>
             <!-- /.card -->
             
@@ -91,11 +102,11 @@
               <div class="modal-body">
                 <!-- user name -->
                 <div class="form-group">
-                 <input v-model="form.name" type="text" name="name" class="form-control" placeholder="اسم فريم">
+                 <input v-model="form.name" type="text" name="name" class="form-control" placeholder="اسم فريم" required>
                  <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" /></div>
                   <!-- user email -->
                   <div class="form-group">
-                   <input v-model="form.company" type="text" name="company" class="form-control" placeholder="اسم الشركه">
+                   <input v-model="form.company" type="text" name="company" class="form-control" placeholder="اسم الشركه" required>
                  <div v-if="form.errors.has('company')" v-html="form.errors.get('company')" /></div>
               <!-- cg -->
                  <div class="form-group">
@@ -103,7 +114,7 @@
                  <div v-if="form.errors.has('price')" v-html="form.errors.get('price')" /></div>
                  <!--  -->
                 <div class="form-group">
-                   <input v-model="form.date" type="date" name="date" class="form-control" >
+                   <input v-model="form.date" type="date" name="date" class="form-control" required >
                  <div v-if="form.errors.has('date')" v-html="form.errors.get('date')" /></div>
               <!-- bio -->
                 <div class="form-group">
@@ -129,6 +140,7 @@
       data(){
             return{
               editmode: false,
+              search:'',
               prodect :{},
               prodect_total:'',
               form:new Form(
@@ -146,8 +158,16 @@
       },
 
       methods:
-
       {
+        searchit(){
+          Fire.$emit('searching');
+        },
+           getResults(page = 1) {
+			axios.get('api/prodects?page=' + page)
+				.then(response => {
+					this.prodect = response.data.prodect;
+				});
+		},
         updateUser(){
           this.$Progress.start();
             this.form.put('api/prodects/'+this.form.id)
@@ -187,7 +207,7 @@
           // sweet alert 
          swal.fire({
            title: 'هل انت متأكد؟',
-              text: "هل انت متأكد من حذف هذا فريم!",
+              text: "(ملاحظة : سيتم مسح جميع الطلبات التي  تمت عن طريق هذا الفريم) هل انت متأكد من حذف هذا فريم!",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
@@ -219,11 +239,12 @@
         },
         loadUsers(){
 
-        axios.get("api/prodects").then(({ data }) => (this.prodect = data.prodect.data));
+        axios.get("api/prodects").then(({ data }) => (this.prodect = data.prodect));
         axios.get("api/prodects").then(({ data }) => (this.prodect_total = data.prodect_total));
         },
 
         createuser(){
+         
         this.$Progress.start();
           // Http Post data to create new user 
         this.form.post('api/prodects')
@@ -250,6 +271,16 @@
          
       },
         created() {
+           Fire.$on('searching',()=>{
+            let query=this.search;
+            axios.get('api/findprodects?q='+query)
+            .then((data)=>{
+              this.prodect=data.data
+            })
+            .catch(()=>{
+
+            })
+          })
             this.loadUsers();
             // Refrash page 
              Fire.$on('AfterCreate',() => {
